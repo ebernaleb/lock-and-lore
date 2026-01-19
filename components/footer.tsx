@@ -1,71 +1,105 @@
 import React from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-black py-12 sm:py-16 md:py-20 border-t border-white/10">
-            <div className="container px-4 md:px-8 mx-auto">
+        <footer className="bg-black relative overflow-hidden border-t border-white/10">
+
+            <div className="container px-4 md:px-8 mx-auto py-16 md:py-20">
                 {/* Main Footer Content */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 md:gap-16 mb-8 sm:mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
 
                     {/* Brand Section */}
-                    <div className="text-center md:text-left">
+                    <div className="md:col-span-4 text-center md:text-left">
                         <Link
                             href="/"
-                            className="text-2xl sm:text-3xl font-bold tracking-[0.2em] text-white uppercase inline-block mb-3 sm:mb-4 min-h-[44px] flex items-center justify-center md:justify-start"
+                            className="text-2xl sm:text-3xl font-bold tracking-[0.2em] text-white uppercase inline-block mb-4"
                             style={{ fontFamily: 'var(--font-cinzel)' }}
                         >
                             LOCK & LORE
                         </Link>
-                        <p className="text-xs sm:text-sm text-gray-500 tracking-wider uppercase">
-                            Immersive Escape Rooms
-                            <br />
-                            Virginia Beach, VA
+                        <p className="text-gray-500 text-sm leading-relaxed mb-6 max-w-xs mx-auto md:mx-0">
+                            Immersive escape room experiences in Virginia Beach. Solve puzzles, uncover mysteries, and escape before time runs out.
                         </p>
+                        <div className="flex items-center justify-center md:justify-start gap-2 text-gray-400 text-sm font-medium">
+                            <Clock className="w-4 h-4" />
+                            <span className="tracking-wide">Open Daily 10AM - 10PM</span>
+                        </div>
                     </div>
 
-                    {/* Quick Links */}
-                    <div className="text-center">
-                        <h3 className="text-white font-bold tracking-widest uppercase text-xs sm:text-sm mb-3 sm:mb-4">Quick Links</h3>
-                        <div className="flex flex-col gap-2 sm:gap-3">
+                    {/* Navigation */}
+                    <div className="md:col-span-2 md:col-start-6 text-center md:text-left">
+                        <h3 className="text-gray-300 text-sm font-semibold tracking-[0.2em] uppercase mb-6">Navigate</h3>
+                        <nav className="flex flex-col gap-3">
                             <FooterLink href="/">Home</FooterLink>
                             <FooterLink href="#rooms">Our Rooms</FooterLink>
                             <FooterLink href="/waiver">Waiver</FooterLink>
                             <FooterLink href="/contact">Contact</FooterLink>
-                        </div>
+                        </nav>
+                    </div>
+
+                    {/* Information */}
+                    <div className="md:col-span-2 text-center md:text-left">
+                        <h3 className="text-gray-300 text-sm font-semibold tracking-[0.2em] uppercase mb-6">Info</h3>
+                        <nav className="flex flex-col gap-3">
+                            <FooterLink href="#faq">FAQ</FooterLink>
+                            <FooterLink href="#location">Location</FooterLink>
+                            <FooterLink href="#">Gift Cards</FooterLink>
+                            <FooterLink href="#">Group Events</FooterLink>
+                        </nav>
                     </div>
 
                     {/* Contact Info */}
-                    <div className="text-center md:text-right">
-                        <h3 className="text-white font-bold tracking-widest uppercase text-xs sm:text-sm mb-3 sm:mb-4">Contact</h3>
-                        <div className="flex flex-col gap-2 sm:gap-3 items-center md:items-end">
-                            <div className="flex items-center gap-2 text-gray-400 text-xs sm:text-sm">
-                                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-                                <span>Virginia Beach, VA</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-400 text-xs sm:text-sm">
-                                <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-                                <span>(757) 555-0123</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-400 text-xs sm:text-sm">
-                                <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
-                                <span className="break-all">bookings@lockandlore.com</span>
-                            </div>
+                    <div className="md:col-span-3 text-center md:text-right">
+                        <h3 className="text-gray-300 text-sm font-semibold tracking-[0.2em] uppercase mb-6">Get in Touch</h3>
+                        <div className="flex flex-col gap-4 items-center md:items-end">
+                            <a
+                                href="https://maps.google.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group flex items-center gap-3 text-gray-400 hover:text-white transition-colors duration-300"
+                            >
+                                <span className="text-sm">Virginia Beach, VA</span>
+                                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-gray-500 group-hover:bg-white/5 transition-all duration-300">
+                                    <MapPin className="w-3.5 h-3.5" />
+                                </div>
+                            </a>
+                            <a
+                                href="tel:+17575550123"
+                                className="group flex items-center gap-3 text-gray-400 hover:text-white transition-colors duration-300"
+                            >
+                                <span className="text-sm">(757) 555-0123</span>
+                                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-gray-500 group-hover:bg-white/5 transition-all duration-300">
+                                    <Phone className="w-3.5 h-3.5" />
+                                </div>
+                            </a>
+                            <a
+                                href="mailto:bookings@lockandlore.com"
+                                className="group flex items-center gap-3 text-gray-400 hover:text-white transition-colors duration-300"
+                            >
+                                <span className="text-sm">bookings@lockandlore.com</span>
+                                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-gray-500 group-hover:bg-white/5 transition-all duration-300">
+                                    <Mail className="w-3.5 h-3.5" />
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="pt-6 sm:pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
-                    <p className="text-[10px] sm:text-xs text-gray-600 tracking-widest uppercase text-center md:text-left">
-                        &copy; {currentYear} Lock & Lore. All Rights Reserved.
-                    </p>
-                    <div className="flex gap-4 sm:gap-6">
-                        <FooterLink href="#">Privacy Policy</FooterLink>
-                        <FooterLink href="#">Terms of Service</FooterLink>
+                <div className="mt-16 pt-8 border-t border-white/5">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <p className="text-xs text-gray-600 tracking-wider">
+                            &copy; {currentYear} Lock & Lore Escape Rooms. All Rights Reserved.
+                        </p>
+                        <div className="flex items-center gap-6">
+                            <FooterLink href="#" small>Privacy Policy</FooterLink>
+                            <span className="text-gray-700">|</span>
+                            <FooterLink href="#" small>Terms of Service</FooterLink>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -73,11 +107,11 @@ export default function Footer() {
     );
 }
 
-function FooterLink({ href, children }: { href: string, children: React.ReactNode }) {
+function FooterLink({ href, children, small = false }: { href: string, children: React.ReactNode, small?: boolean }) {
     return (
         <Link
             href={href}
-            className="text-gray-500 hover:text-white text-[10px] sm:text-xs uppercase tracking-widest transition-colors duration-300 min-h-[44px] flex items-center justify-center md:justify-start"
+            className={`text-gray-400 hover:text-white transition-colors duration-300 ${small ? 'text-xs' : 'text-sm'}`}
         >
             {children}
         </Link>

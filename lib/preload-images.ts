@@ -56,13 +56,11 @@ export async function preloadImages(
   };
 
   // Helper to get the image path
-  // Frames 1-192 are jpg, frames 193-274 are png
-  const JPG_FRAME_COUNT = 192;
+  // New format: frame_XXX_delay-0.042s.jpg (or 0.041s for every 3rd frame starting at index 1)
   const getImagePath = (index: number): string => {
-    const frameNum = index + 1; // Convert 0-based index to 1-based frame number
-    const paddedNum = String(frameNum).padStart(3, '0');
-    const extension = frameNum <= JPG_FRAME_COUNT ? 'jpg' : 'png';
-    return `${basePath}frame_${paddedNum}.${extension}`;
+    const paddedNum = String(index).padStart(3, '0');
+    const delay = index % 3 === 1 ? '0.041s' : '0.042s';
+    return `${basePath}frame_${paddedNum}_delay-${delay}.jpg`;
   };
 
   // Check if operation was aborted

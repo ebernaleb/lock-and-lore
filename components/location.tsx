@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 
 export default function Location() {
     return (
-        <section id="location" className="py-16 sm:py-24 md:py-32 bg-background relative overflow-hidden">
+        <section id="location" className="pt-8 sm:pt-12 md:pt-16 pb-16 sm:pb-24 md:pb-32 bg-background relative overflow-hidden">
             <div className="container px-4 md:px-8 mx-auto">
                 {/* Header */}
                 <div className="mb-8 sm:mb-12 md:mb-16 text-center sm:text-right">
@@ -56,7 +56,7 @@ export default function Location() {
                     </div>
 
                     {/* Map Placeholder */}
-                    <div className="h-[400px] sm:h-[500px] md:h-[600px] w-full bg-zinc-900 rounded-2xl sm:rounded-[2rem] border border-white/10 relative overflow-hidden group lg:-mt-8">
+                    <div className="h-[340px] sm:h-[400px] md:h-[480px] w-full bg-zinc-900 rounded-2xl sm:rounded-[2rem] border border-white/10 relative overflow-hidden group lg:-mt-8">
                         {/* Real implementation would use Google Maps Embed API */}
                         <div className="absolute inset-0 bg-zinc-900 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all duration-500">
                             <span className="text-white/20 font-black text-lg sm:text-xl md:text-2xl tracking-[0.2em] uppercase">[ MAP EMBED ]</span>

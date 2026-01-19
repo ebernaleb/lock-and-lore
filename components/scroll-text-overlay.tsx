@@ -31,11 +31,6 @@ export default function ScrollTextOverlay({ progress, blackFrameStart }: ScrollT
     { text: 'ESCAPE?', startProgress: 0.66, endProgress: 1.0 },
   ];
 
-  // Fade out branding at the end of the sequence
-  const brandingOpacity = blackFrameProgress > 0.85
-    ? Math.max(0, 1 - (blackFrameProgress - 0.85) / 0.15)
-    : 1;
-
   return (
     <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
       {words.map((word) => (
@@ -48,23 +43,6 @@ export default function ScrollTextOverlay({ progress, blackFrameStart }: ScrollT
         />
       ))}
 
-      {/* Persistent Branding during text sequence */}
-      <motion.div
-        className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 md:bottom-12 md:left-12 z-50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: brandingOpacity }}
-        transition={{ duration: 0.5 }}
-      >
-        <span
-          className="text-xl sm:text-2xl md:text-3xl font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase"
-          style={{
-            fontFamily: 'var(--font-cinzel)',
-            color: '#0a0a0a' // Just barely lighter than black
-          }}
-        >
-          LOCK & LORE
-        </span>
-      </motion.div>
     </div>
   );
 }

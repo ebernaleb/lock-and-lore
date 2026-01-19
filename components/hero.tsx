@@ -12,11 +12,11 @@ export default function Hero() {
       {/* Scroll-Driven Frame Animation Section */}
       <ScrollSequenceCanvas
         basePath="/sequence/"
-        frameCount={265}
+        frameCount={255}
         priorityFrames={10}
-        scrollHeight={350}
+        scrollHeight={312}
         fitMode="cover"
-        slowdown={{ startAt: 192 / 265, factor: 0.3 }}
+        slowdown={{ startAt: 185 / 255, factor: 0.3 }}
         renderLoader={(progress) => (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black z-50">
             <div className="text-center">
@@ -68,7 +68,7 @@ export default function Hero() {
           <>
             <div className="absolute inset-0 bg-black/60 pointer-events-none" />
             <HeroOverlay progress={progress} />
-            <ScrollTextOverlay progress={progress} blackFrameStart={192 / 265} />
+            <ScrollTextOverlay progress={progress} blackFrameStart={185 / 255} />
           </>
         )}
       />
