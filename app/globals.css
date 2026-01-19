@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+@theme {
+  /* Cohesive Color Palette */
+  --color-background: #000000;
+  --color-foreground: #ececec;
+
+  --color-card: #18181b;
+  --color-card-foreground: #ececec;
+
+  --color-primary: #7f1d1d;
+  /* Muted Crimson */
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #b45309;
+  /* Burnished Gold */
+  --color-secondary-foreground: #ffffff;
+
+  --color-accent: #27272a;
+  --color-accent-foreground: #fafafa;
+
+  --color-destructive: #991b1b;
+  --color-destructive-foreground: #fafafa;
+
+  --color-border: #27272a;
+  --color-input: #27272a;
+  --color-ring: #d4d4d8;
+
+  /* Fonts */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Animations */
+  --animate-fade-in: fadeIn 1.5s ease-out forwards;
+}
+
+/* Keyframes must be declared globally if not in @theme using specific syntax, but simple CSS works too */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    touch-action: manipulation;
+    overscroll-behavior-y: none;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+
+  /* Improve touch feedback for buttons and links */
+  button,
+  a,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  button:active,
+  a:active,
+  [role="button"]:active {
+    opacity: 0.85;
+    transition: opacity 0.1s ease;
+  }
+
+  /* Prevent text selection on interactive elements */
+  button,
+  [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Improve input experience on mobile */
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Premium Noise Texture */
+
+
+/* Cinematic Utilities */
+.text-cinematic {
+  @apply tracking-[0.2em] uppercase font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
