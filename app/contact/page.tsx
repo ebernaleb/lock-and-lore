@@ -326,7 +326,7 @@ export default function ContactPage() {
                           "w-full sm:w-auto min-w-[200px] font-bold tracking-widest uppercase px-8 py-4 rounded-full transition-all duration-300 text-sm flex items-center justify-center gap-2 group",
                           isSubmitted
                             ? "bg-green-600 text-white cursor-default"
-                            : "bg-white text-black hover:bg-primary hover:text-white shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(127,29,29,0.3)]"
+                            : "bg-white text-black hover:bg-primary hover:text-white"
                         )}
                       >
                         {isSubmitted ? (

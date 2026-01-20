@@ -98,7 +98,7 @@ export default function Navbar() {
                                                 });
                                             }
                                         }}
-                                        className="text-xs font-bold text-white border border-white rounded-full px-5 py-2.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black min-h-[44px]"
+                                        className="text-sm font-extrabold text-white border-2 border-white rounded-full px-4 py-1.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black"
                                     >
                                         {link.name}
                                     </button>
@@ -120,7 +120,7 @@ export default function Navbar() {
                                                 behavior: 'smooth'
                                             });
                                         }}
-                                        className="text-xs font-bold text-white border border-white rounded-full px-5 py-2.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black min-h-[44px]"
+                                        className="text-sm font-extrabold text-white border-2 border-white rounded-full px-4 py-1.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black"
                                     >
                                         {link.name}
                                     </button>
@@ -149,7 +149,7 @@ export default function Navbar() {
                                                 });
                                             }
                                         }}
-                                        className="text-xs font-bold text-white border border-white rounded-full px-5 py-2.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black min-h-[44px]"
+                                        className="text-sm font-extrabold text-white border-2 border-white rounded-full px-4 py-1.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black"
                                     >
                                         {link.name}
                                     </button>
@@ -160,7 +160,7 @@ export default function Navbar() {
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className="text-xs font-bold text-white border border-white rounded-full px-5 py-2.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black min-h-[44px] flex items-center"
+                                    className="text-sm font-extrabold text-white border-2 border-white rounded-full px-4 py-1.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black flex items-center"
                                 >
                                     {link.name}
                                 </Link>

@@ -198,7 +198,7 @@ export default function BookingCalendar({ roomId, roomName }: BookingCalendarPro
             <Button
                 href={buildBookingUrl()}
                 className={`w-full py-4 sm:py-6 min-h-[48px] rounded-full font-bold tracking-widest uppercase transition-all duration-300 text-sm sm:text-base ${selectedDate && selectedTime
-                    ? 'bg-white text-black hover:bg-primary hover:text-white shadow-[0_0_30px_rgba(255,255,255,0.15)]'
+                    ? 'bg-white text-black hover:bg-primary hover:text-white'
                     : 'bg-white/20 text-white/60 cursor-default pointer-events-none'
                     }`}
             >

@@ -14,7 +14,7 @@ export default function RoomCarousel() {
     const [paddingLeft, setPaddingLeft] = useState(0);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [cardWidth, setCardWidth] = useState(0);
-    const [gap, setGap] = useState(48);
+    const [gap, setGap] = useState(64);
     const [isMobile, setIsMobile] = useState(false);
 
     const updateLayout = () => {
@@ -30,14 +30,14 @@ export default function RoomCarousel() {
         }
 
         if (mobile) {
-            setCardWidth(window.innerWidth - 80); // Smaller card with 40px padding on each side
-            setGap(16);
+            setCardWidth(window.innerWidth - 40);
+            setGap(24);
         } else if (isTablet) {
             setCardWidth(380);
-            setGap(24);
+            setGap(32);
         } else {
-            setCardWidth(window.innerWidth * 0.75);
-            setGap(48);
+            setCardWidth(window.innerWidth * 0.60);
+            setGap(64);
         }
     };
 
@@ -110,7 +110,7 @@ export default function RoomCarousel() {
                     }}
                 >
                     <motion.div
-                        className="flex gap-4 sm:gap-6 md:gap-12"
+                        className="flex gap-6 sm:gap-8 md:gap-16"
                         animate={{
                             x: -(currentIndex * (cardWidth + gap))
                         }}
@@ -138,7 +138,7 @@ export default function RoomCarousel() {
                             <Link
                                 key={room.id}
                                 href={`/rooms/${room.id}`}
-                                className="group relative w-[calc(100vw-80px)] sm:w-[380px] md:w-[75vw] h-[580px] sm:h-[500px] md:h-[500px] lg:h-[550px] flex-shrink-0 rounded-3xl bg-zinc-900 overflow-hidden border-4 border-black cursor-pointer block"
+                                className="group relative w-[calc(100vw-40px)] sm:w-[380px] md:w-[60vw] h-[450px] sm:h-[420px] md:h-[440px] lg:h-[480px] flex-shrink-0 rounded-2xl bg-zinc-900 overflow-hidden border-4 border-black cursor-pointer block"
                                 style={{ width: cardWidth }}
                             >
                                 {/* Background Image & Overlay */}
@@ -163,36 +163,36 @@ export default function RoomCarousel() {
 
                                 {/* Default State: Just Title */}
                                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center transition-all duration-500 md:group-hover:opacity-0 md:group-hover:translate-y-[-20px]">
-                                    <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-wider drop-shadow-lg text-center px-4">
+                                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white uppercase tracking-wider drop-shadow-lg text-center px-4">
                                         {room.name}
                                     </h3>
                                 </div>
 
                                 {/* Hover State: Full Details - Desktop only hover, always visible on mobile */}
-                                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 sm:p-8 md:p-12 text-center opacity-0 md:opacity-0 transition-all duration-500 md:group-hover:opacity-100 pointer-events-none md:pointer-events-auto">
-                                    <div className="translate-y-8 transition-transform duration-500 md:group-hover:translate-y-0 space-y-3 sm:space-y-4 md:space-y-6 w-full max-w-lg">
+                                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-5 sm:p-6 md:p-8 text-center opacity-0 md:opacity-0 transition-all duration-500 md:group-hover:opacity-100 pointer-events-none md:pointer-events-auto">
+                                    <div className="translate-y-8 transition-transform duration-500 md:group-hover:translate-y-0 space-y-2 sm:space-y-3 md:space-y-4 w-full max-w-md">
                                         {/* Removed category/theme badge */}
 
-                                        <h3 className="text-2xl sm:text-3xl md:text-5xl font-black text-white uppercase leading-[0.9] tracking-wide">
+                                        <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase leading-[0.9] tracking-wide">
                                             {room.name}
                                         </h3>
 
-                                        <p className="text-gray-200 text-xs sm:text-sm md:text-base leading-relaxed line-clamp-3 md:line-clamp-none max-w-md mx-auto px-2">
+                                        <p className="text-gray-200 text-xs sm:text-sm leading-relaxed line-clamp-3 md:line-clamp-none max-w-sm mx-auto px-2">
                                             {room.description}
                                         </p>
 
-                                        <div className="flex justify-center items-center gap-4 sm:gap-6 py-3 sm:py-4 border-t border-white/20 border-b w-full mx-auto">
+                                        <div className="flex justify-center items-center gap-3 sm:gap-4 py-2 sm:py-3 border-t border-white/20 border-b w-full mx-auto">
                                             <div className="flex flex-col items-center gap-1">
-                                                <Gauge className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                                                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider">{room.difficulty}</span>
+                                                <Gauge className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                                                <span className="text-[8px] sm:text-[9px] uppercase font-bold tracking-wider">{room.difficulty}</span>
                                             </div>
                                             <div className="flex flex-col items-center gap-1">
-                                                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                                                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider">{room.duration}</span>
+                                                <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                                                <span className="text-[8px] sm:text-[9px] uppercase font-bold tracking-wider">{room.duration}</span>
                                             </div>
                                             <div className="flex flex-col items-center gap-1">
-                                                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                                                <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider">{room.players}</span>
+                                                <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+                                                <span className="text-[8px] sm:text-[9px] uppercase font-bold tracking-wider">{room.players}</span>
                                             </div>
                                         </div>
                                     </div>

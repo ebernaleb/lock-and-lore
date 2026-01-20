@@ -24,11 +24,11 @@ export default function RoomsGrid() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-16">
                     {rooms.map((room) => (
                         <div
                             key={room.id}
-                            className="group relative h-[560px] w-full overflow-hidden rounded-md border-4 border-black bg-zinc-900"
+                            className="group relative h-[480px] w-full overflow-hidden rounded-md border-4 border-black bg-zinc-900"
                         >
                             {/* Background Image & Overlay */}
                             <div className="absolute inset-0 z-0">

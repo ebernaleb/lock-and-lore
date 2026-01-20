@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { useScroll, useSpring, motion } from 'framer-motion';
+import { useScroll, useSpring } from 'framer-motion';
 import { preloadImages, PreloadProgress } from '@/lib/preload-images';
 import { setupCanvas, drawImageToCanvas, FitMode } from '@/lib/canvas-utils';
 
@@ -25,14 +25,14 @@ interface ScrollSequenceCanvasProps {
   scrollHeight?: number;
   /** Custom className for the wrapper */
   className?: string;
-  /** Render loading state */
-  renderLoader?: (progress: PreloadProgress) => React.ReactNode;
   /** Render overlay content based on scroll progress */
   renderOverlay?: (progress: number) => React.ReactNode;
   /** Callback when loading completes */
   onLoadComplete?: () => void;
   /** Optional slowdown configuration for specific sections */
   slowdown?: SlowdownConfig;
+  /** Frame at which to trigger auto-play (default: 10) */
+  autoPlayTriggerFrame?: number;
 }
 
 /**
@@ -61,10 +61,10 @@ export default function ScrollSequenceCanvas({
   fitMode = 'cover',
   scrollHeight = 400,
   className = '',
-  renderLoader,
   renderOverlay,
   onLoadComplete,
   slowdown,
+  autoPlayTriggerFrame = 10,
 }: ScrollSequenceCanvasProps) {
   /**
    * Apply non-linear progress mapping for slowdown effect
@@ -102,6 +102,8 @@ export default function ScrollSequenceCanvas({
   const currentFrameRef = useRef<number>(0);
   const rafRef = useRef<number | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const autoPlayTriggeredRef = useRef<boolean>(false);
+  const isAutoPlayingRef = useRef<boolean>(false);
 
   // State
   const [isLoading, setIsLoading] = useState(true);
@@ -124,6 +126,14 @@ export default function ScrollSequenceCanvas({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Scroll to top on page load/refresh to reset the animation
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // Reset auto-play state in case of hot reload
+    autoPlayTriggeredRef.current = false;
+    isAutoPlayingRef.current = false;
+  }, []);
+
   // Scroll tracking
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -137,6 +147,109 @@ export default function ScrollSequenceCanvas({
     mass: 0.2,
     restDelta: 0.001,
   });
+
+  /**
+   * Auto-play the sequence to completion
+   * Smoothly scrolls to the end of the container, which triggers frame updates
+   * Black frames (CAN YOU ESCAPE section) play 30% slower for dramatic effect
+   */
+  const triggerAutoPlay = useCallback(() => {
+    if (!containerRef.current || isAutoPlayingRef.current || autoPlayTriggeredRef.current) {
+      return;
+    }
+
+    autoPlayTriggeredRef.current = true;
+    isAutoPlayingRef.current = true;
+
+    // Get the container's position and height
+    const container = containerRef.current;
+    const containerRect = container.getBoundingClientRect();
+    const containerTop = containerRect.top + window.scrollY;
+    const containerHeight = container.clientHeight;
+
+    // Calculate the target scroll position (end of container)
+    const targetScroll = containerTop + containerHeight - window.innerHeight;
+
+    // Black frames start at 185/255 of the sequence
+    const blackFrameStart = 185 / 255; // ~0.725
+
+    // Calculate timing with faster normal frames and slower black frames
+    // Normal section: 0 to blackFrameStart (72.5%) - plays 15% faster
+    // Black section: blackFrameStart to 1.0 (27.5%) - plays 30% slower
+    const baseDuration = 4000; // Base duration in ms
+    const normalSectionRatio = blackFrameStart;
+    const blackSectionRatio = 1 - blackFrameStart;
+
+    // Time allocation: normal section at 0.85x duration (15% faster), black section at 2x duration
+    const normalSectionTime = baseDuration * normalSectionRatio * 0.85; // 15% faster
+    const blackSectionTime = baseDuration * blackSectionRatio * 2.0; // 100% slower (2x duration)
+    const totalDuration = normalSectionTime + blackSectionTime;
+
+    // Time breakpoint where black frames begin
+    const timeBreakpoint = normalSectionTime / totalDuration;
+
+    const startTime = performance.now();
+    const startScroll = window.scrollY;
+    const scrollDistance = targetScroll - startScroll;
+
+    /**
+     * Custom easing function for smooth acceleration and deceleration
+     * Using ease-in-out-cubic for a polished, professional feel
+     */
+    const easeInOutCubic = (t: number): number => {
+      return t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    };
+
+    /**
+     * Maps time progress to scroll progress with slower black frames
+     * Before timeBreakpoint: normal speed through first 72.5% of scroll
+     * After timeBreakpoint: slower speed through remaining 27.5% of scroll
+     */
+    const mapTimeToScroll = (timeProgress: number): number => {
+      if (timeProgress <= timeBreakpoint) {
+        // Map [0, timeBreakpoint] to [0, blackFrameStart]
+        return (timeProgress / timeBreakpoint) * blackFrameStart;
+      } else {
+        // Map [timeBreakpoint, 1] to [blackFrameStart, 1]
+        const blackProgress = (timeProgress - timeBreakpoint) / (1 - timeBreakpoint);
+        return blackFrameStart + blackProgress * (1 - blackFrameStart);
+      }
+    };
+
+    const animateScroll = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const timeProgress = Math.min(elapsed / totalDuration, 1);
+      const easedTimeProgress = easeInOutCubic(timeProgress);
+
+      // Apply the time-to-scroll mapping for slower black frames
+      const scrollProgress = mapTimeToScroll(easedTimeProgress);
+
+      const currentScroll = startScroll + (scrollDistance * scrollProgress);
+      window.scrollTo(0, currentScroll);
+
+      if (timeProgress < 1) {
+        requestAnimationFrame(animateScroll);
+      } else {
+        isAutoPlayingRef.current = false;
+        // Scroll directly to the rooms section with offset
+        setTimeout(() => {
+          const roomsSection = document.getElementById('rooms');
+          if (roomsSection) {
+            const offset = 150; // Offset to show rooms cards better
+            const elementPosition = roomsSection.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo({
+              top: elementPosition + offset,
+              behavior: 'smooth'
+            });
+          }
+        }, 100);
+      }
+    };
+
+    requestAnimationFrame(animateScroll);
+  }, []);
 
   /**
    * Draw a specific frame to the canvas
@@ -282,39 +395,21 @@ export default function ScrollSequenceCanvas({
       if (frameIndex !== currentFrameRef.current) {
         currentFrameRef.current = frameIndex;
         drawFrame(frameIndex);
+
+        // Trigger auto-play when reaching the trigger frame
+        if (frameIndex >= autoPlayTriggerFrame && !autoPlayTriggeredRef.current) {
+          triggerAutoPlay();
+        }
       }
     });
 
     return () => {
       unsubscribe();
     };
-  }, [smoothProgress, frameCount, isLoading, drawFrame, applySlowdown]);
+  }, [smoothProgress, frameCount, isLoading, drawFrame, applySlowdown, autoPlayTriggerFrame, triggerAutoPlay]);
 
-  /**
-   * Default loader component
-   */
-  const defaultLoader = (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black z-50">
-      <div className="text-center">
-        <div className="mb-4">
-          <div className="w-48 h-1 bg-white/20 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-white"
-              initial={{ width: 0 }}
-              animate={{ width: `${loadProgress.percentage}%` }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-            />
-          </div>
-        </div>
-        <p className="text-white/60 text-sm font-medium tracking-wider">
-          LOADING EXPERIENCE
-        </p>
-        <p className="text-white/40 text-xs mt-2">
-          {loadProgress.loaded} / {loadProgress.total} frames
-        </p>
-      </div>
-    </div>
-  );
+  // First frame path for instant background display
+  const firstFramePath = `${basePath}frame_000_delay-0.042s.jpg`;
 
   return (
     <div
@@ -333,6 +428,10 @@ export default function ScrollSequenceCanvas({
           position: 'sticky',
           top: 0,
           zIndex: 10,
+          backgroundColor: 'black',
+          backgroundImage: `url(${firstFramePath})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
         <canvas
@@ -343,10 +442,7 @@ export default function ScrollSequenceCanvas({
           }}
         />
 
-        {/* Loading State */}
-        {isLoading && (renderLoader?.(loadProgress) || defaultLoader)}
-
-        {/* Custom Overlay */}
+        {/* Custom Overlay - shown after frames are loaded */}
         {!isLoading && renderOverlay && renderOverlay(scrollProgress)}
       </div>
     </div>

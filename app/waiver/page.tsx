@@ -130,7 +130,7 @@ export default function WaiverPage() {
             animate={{ opacity: 1, y: 0 }}
             className="max-w-2xl w-full text-center"
           >
-            <div className="bg-zinc-900/50 border border-white/10 rounded-lg p-12">
+            <div className="bg-zinc-700/50 border-4 border-black rounded-2xl p-12">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -213,7 +213,7 @@ export default function WaiverPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-zinc-900/40 border border-white/10 rounded-lg p-6 md:p-8"
+              className="bg-zinc-700/50 border-4 border-black rounded-2xl p-6 md:p-8"
             >
               <h2
                 className="text-xl md:text-2xl font-bold text-white mb-6 uppercase tracking-wide"
@@ -291,7 +291,7 @@ export default function WaiverPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="bg-zinc-900/40 border border-white/10 rounded-lg p-6 md:p-8"
+              className="bg-zinc-700/50 border-4 border-black rounded-2xl p-6 md:p-8"
             >
               <h2
                 className="text-xl md:text-2xl font-bold text-white mb-6 uppercase tracking-wide"
@@ -337,7 +337,7 @@ export default function WaiverPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-zinc-900/40 border border-white/10 rounded-lg p-6 md:p-8"
+              className="bg-zinc-700/50 border-4 border-black rounded-2xl p-6 md:p-8"
             >
               <Checkbox
                 id="isMinor"
@@ -391,7 +391,7 @@ export default function WaiverPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              className="bg-zinc-900/40 border border-white/10 rounded-lg p-6 md:p-8"
+              className="bg-zinc-700/50 border-4 border-black rounded-2xl p-6 md:p-8"
             >
               <h2
                 className="text-xl md:text-2xl font-bold text-white mb-6 uppercase tracking-wide"
@@ -432,7 +432,7 @@ export default function WaiverPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-zinc-900/40 border border-white/10 rounded-lg p-6 md:p-8"
+              className="bg-zinc-700/50 border-4 border-black rounded-2xl p-6 md:p-8"
             >
               <h2
                 className="text-xl md:text-2xl font-bold text-white mb-6 uppercase tracking-wide"
@@ -516,7 +516,7 @@ export default function WaiverPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-primary/10 border border-primary/20 rounded-lg p-5"
+                className="bg-primary/10 border-4 border-black rounded-2xl p-5"
               >
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />

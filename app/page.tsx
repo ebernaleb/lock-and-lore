@@ -16,6 +16,9 @@ export default function Home() {
 
       <RoomCarousel />
 
+      {/* Spacer between sections */}
+      <div className="h-24 sm:h-32 md:h-40 bg-black" />
+
       <Location />
 
       {/* Newsletter Subscribe Section */}
@@ -44,7 +47,7 @@ export default function Home() {
             />
             <button
               type="submit"
-              className="w-full sm:w-auto bg-white text-black hover:bg-primary hover:text-white font-bold tracking-widest uppercase px-8 sm:px-10 py-3.5 sm:py-4 min-h-[48px] rounded-full transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] text-sm sm:text-base"
+              className="w-full sm:w-auto bg-white text-black hover:bg-primary hover:text-white font-bold tracking-widest uppercase px-8 sm:px-10 py-3.5 sm:py-4 min-h-[48px] rounded-full transition-all duration-300 text-sm sm:text-base"
             >
               Subscribe
             </button>
