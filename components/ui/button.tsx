@@ -7,6 +7,8 @@ export interface ButtonProps
     variant?: 'default' | 'outline' | 'ghost' | 'link';
     size?: 'default' | 'sm' | 'lg' | 'icon';
     href?: string;
+    target?: string;
+    rel?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

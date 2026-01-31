@@ -7,7 +7,7 @@ import { Clock, Users, Gauge } from 'lucide-react';
 
 export default function RoomsGrid() {
     return (
-        <section id="rooms" className="py-24 md:py-32 bg-background relative">
+        <section id="rooms" className="pt-32 md:pt-44 pb-24 md:pb-32 bg-background relative">
             <div className="container px-4 md:px-8 mx-auto">
                 <div className="mb-16 md:mb-24 flex flex-col md:flex-row items-end justify-between gap-6 border-b border-white/5 pb-8">
                     <div>
@@ -41,13 +41,6 @@ export default function RoomsGrid() {
                                 />
                                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/70 transition-colors duration-500" />
                             </div>
-
-                            {/* New Badge */}
-                            {room.isNew && (
-                                <div className="absolute top-4 right-4 z-20 bg-primary text-black text-xs font-black px-3 py-1 uppercase tracking-widest shadow-lg">
-                                    New
-                                </div>
-                            )}
 
                             {/* Default State: Just Title */}
                             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-[-20px]">

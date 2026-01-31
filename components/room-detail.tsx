@@ -29,15 +29,6 @@ export default function RoomDetail({ room }: RoomDetailProps) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                {/* New Badge */}
-                {room.isNew && (
-                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
-                        <span className="px-2.5 py-1 sm:px-3 sm:py-1 bg-primary text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest rounded-full">
-                            New
-                        </span>
-                    </div>
-                )}
-
                 {/* Stats on Image - Mobile: Stack, Tablet+: Row */}
                 <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 flex flex-col sm:flex-row gap-2 sm:gap-4">
                     <StatCard

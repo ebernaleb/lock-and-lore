@@ -9,7 +9,6 @@ import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
-    const [isVisible, setIsVisible] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
@@ -18,36 +17,16 @@ export default function Navbar() {
     useEffect(() => {
         const handleScroll = () => {
             const scrollY = window.scrollY;
-            const vh = window.innerHeight;
-
-            // Hero section scroll logic
-            // Hero is 350vh tall total, so scrollable distance is ~250vh
-            // Text fades out early (around 0.1 progress)
-            const heroScrollDistance = vh * 2.5;
-            const hideThreshold = heroScrollDistance * 0.1; // When text disappears
-            const showThreshold = heroScrollDistance; // When hero ends
-
-            // Navbar background logic
             setIsScrolled(scrollY > 20);
-
-            // Navbar visibility logic
-            // Hide if we are past the text fade but still in the hero scroll sequence
-            if (scrollY > hideThreshold && scrollY < showThreshold) {
-                setIsVisible(false);
-            } else {
-                setIsVisible(true);
-            }
         };
 
         window.addEventListener('scroll', handleScroll);
-        // Trigger once on mount
         handleScroll();
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const navLinks = [
-        { name: 'Home', href: '/' },
         { name: 'Rooms', href: '#rooms' },
         { name: 'Waiver', href: '/waiver' },
         { name: 'Location', href: '#location' },
@@ -56,18 +35,28 @@ export default function Navbar() {
 
     return (
         <>
+            {/* Construction Banner */}
+            <div className="fixed top-0 left-0 right-0 z-[60] bg-primary text-white text-center py-2 text-xs font-bold tracking-widest uppercase">
+                Website Under Construction
+            </div>
+
             <nav
                 className={cn(
-                    'fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b border-white/0',
-                    isScrolled ? 'bg-black/80 backdrop-blur-md border-white/5 py-4' : 'bg-transparent py-6',
-                    !isVisible && !isMobileMenuOpen && '-translate-y-full'
+                    'fixed top-8 left-0 right-0 z-50 transition-all duration-500 border-b border-white/0',
+                    isScrolled ? 'bg-black/80 backdrop-blur-md border-white/5 py-4' : 'bg-transparent py-6'
                 )}
             >
                 <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
-                    {/* Logo */}
+                    {/* Logo - always goes to landing page; on home, scroll to top */}
                     <Link
                         href="/"
-                        className="text-2xl font-bold tracking-[0.2em] text-white uppercase relative"
+                        onClick={(e) => {
+                            if (pathname === '/') {
+                                e.preventDefault();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
+                        }}
+                        className="text-3xl md:text-4xl font-bold tracking-[0.2em] text-white uppercase relative"
                         style={{ fontFamily: 'var(--font-cinzel)' }}
                     >
                         LOCK & LORE
@@ -98,29 +87,7 @@ export default function Navbar() {
                                                 });
                                             }
                                         }}
-                                        className="text-sm font-extrabold text-white border-2 border-white rounded-full px-4 py-1.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black"
-                                    >
-                                        {link.name}
-                                    </button>
-                                );
-                            }
-
-                            // Special handling for Home link - scroll to top or navigate home
-                            if (link.name === 'Home') {
-                                return (
-                                    <button
-                                        key={link.name}
-                                        onClick={() => {
-                                            if (!isHomePage) {
-                                                router.push('/');
-                                                return;
-                                            }
-                                            window.scrollTo({
-                                                top: 0,
-                                                behavior: 'smooth'
-                                            });
-                                        }}
-                                        className="text-sm font-extrabold text-white border-2 border-white rounded-full px-4 py-1.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black"
+                                        className="text-base text-gray-400 px-4 py-1.5 transition-all duration-300 tracking-wide hover:text-white"
                                     >
                                         {link.name}
                                     </button>
@@ -149,7 +116,7 @@ export default function Navbar() {
                                                 });
                                             }
                                         }}
-                                        className="text-sm font-extrabold text-white border-2 border-white rounded-full px-4 py-1.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black"
+                                        className="text-base text-gray-400 px-4 py-1.5 transition-all duration-300 tracking-wide hover:text-white"
                                     >
                                         {link.name}
                                     </button>
@@ -160,7 +127,7 @@ export default function Navbar() {
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className="text-sm font-extrabold text-white border-2 border-white rounded-full px-4 py-1.5 transition-all duration-300 tracking-widest uppercase hover:bg-white hover:text-black flex items-center"
+                                    className="text-base text-gray-400 px-4 py-1.5 transition-all duration-300 tracking-wide hover:text-white flex items-center"
                                 >
                                     {link.name}
                                 </Link>
@@ -218,31 +185,6 @@ export default function Navbar() {
                                                 behavior: 'smooth'
                                             });
                                         }
-                                    }, 100);
-                                }}
-                                className="text-2xl font-light text-white tracking-widest uppercase min-h-[44px] px-4"
-                            >
-                                {link.name}
-                            </button>
-                        );
-                    }
-
-                    // Special handling for Home link
-                    if (link.name === 'Home') {
-                        return (
-                            <button
-                                key={link.name}
-                                onClick={() => {
-                                    setIsMobileMenuOpen(false);
-                                    if (!isHomePage) {
-                                        router.push('/');
-                                        return;
-                                    }
-                                    setTimeout(() => {
-                                        window.scrollTo({
-                                            top: 0,
-                                            behavior: 'smooth'
-                                        });
                                     }, 100);
                                 }}
                                 className="text-2xl font-light text-white tracking-widest uppercase min-h-[44px] px-4"

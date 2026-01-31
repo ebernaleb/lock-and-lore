@@ -148,6 +148,33 @@ export default function ScrollSequenceCanvas({
     restDelta: 0.001,
   });
 
+  // Track previous scroll position to detect instant navigation jumps
+  const lastScrollYRef = useRef<number>(0);
+  const lastScrollTimeRef = useRef<number>(0);
+
+  // Detect instant scroll jumps (from navbar navigation) and sync spring immediately
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const currentTime = performance.now();
+      const timeDelta = currentTime - lastScrollTimeRef.current;
+      const scrollDelta = Math.abs(currentScrollY - lastScrollYRef.current);
+
+      // If scroll position changed significantly in a very short time (< 50ms),
+      // it's likely a programmatic jump (like clicking navbar links)
+      // Jump the spring to sync immediately instead of animating
+      if (timeDelta < 50 && scrollDelta > window.innerHeight * 0.5) {
+        smoothProgress.jump(scrollYProgress.get());
+      }
+
+      lastScrollYRef.current = currentScrollY;
+      lastScrollTimeRef.current = currentTime;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [smoothProgress, scrollYProgress]);
+
   /**
    * Auto-play the sequence to completion
    * Smoothly scrolls to the end of the container, which triggers frame updates

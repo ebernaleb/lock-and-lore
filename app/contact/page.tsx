@@ -103,8 +103,8 @@ export default function ContactPage() {
                     <div>
                       <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-1">Location</h3>
                       <p className="text-white/60 text-sm leading-relaxed">
-                        123 Escape Lane<br />
-                        Virginia Beach, VA 23451
+                        138 S. Rosemont RD, STE #216<br />
+                        Virginia Beach, VA 23452
                       </p>
                     </div>
                   </div>
@@ -116,8 +116,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-1">Phone</h3>
-                      <a href="tel:+17575550123" className="text-white/60 hover:text-white text-sm transition-colors duration-300">
-                        (757) 555-0123
+                      <a href="tel:+17573011862" className="text-white/60 hover:text-white text-sm transition-colors duration-300">
+                        (757) 301-1862
                       </a>
                     </div>
                   </div>
@@ -129,8 +129,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-1">Email</h3>
-                      <a href="mailto:bookings@lockandlore.com" className="text-white/60 hover:text-white text-sm transition-colors duration-300 break-all">
-                        bookings@lockandlore.com
+                      <a href="mailto:lockandloreva@gmail.com" className="text-white/60 hover:text-white text-sm transition-colors duration-300 break-all">
+                        lockandloreva@gmail.com
                       </a>
                     </div>
                   </div>
@@ -243,7 +243,7 @@ export default function ContactPage() {
                           onChange={handleChange}
                           required
                           className="w-full px-4 sm:px-5 py-3 sm:py-3.5 bg-zinc-900 border-2 border-white/20 rounded-xl text-white text-sm placeholder:text-gray-500 focus:outline-none focus:border-primary/50 transition-colors"
-                          placeholder="(757) 555-0123"
+                          placeholder="(757) 301-1862"
                         />
                       </div>
 
@@ -372,7 +372,7 @@ export default function ContactPage() {
                 <div className="text-center">
                   <MapPin className="w-12 h-12 text-primary mx-auto mb-4" />
                   <p className="text-white/60 text-sm">Map integration coming soon</p>
-                  <p className="text-white/40 text-xs mt-2">123 Escape Lane, Virginia Beach, VA 23451</p>
+                  <p className="text-white/40 text-xs mt-2">138 S. Rosemont RD, STE #216, Virginia Beach, VA 23452</p>
                 </div>
               </div>
             </div>
