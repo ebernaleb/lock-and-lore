@@ -1,242 +1,90 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { Button } from './ui/button';
-import { BOOKING_URL, cn } from '@/lib/utils';
-import { Menu, X } from 'lucide-react';
+import Link from "next/link";
+import { useState } from "react";
+import { Menu, X, ChevronDown, ShoppingBag } from "lucide-react";
+// import { Button } from "@/components/ui/button"; 
+// Removed unused import.
+import { cn } from "@/lib/utils";
+import { CartDrawer } from "./CartDrawer";
 
-export default function Navbar() {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const pathname = usePathname();
-    const router = useRouter();
-    const isHomePage = pathname === '/';
+// I'll create a simple reusable Button component inline or in a separate file if needed. For now I'll use standard HTML button with classes.
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const scrollY = window.scrollY;
-            setIsScrolled(scrollY > 20);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
-
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    const navLinks = [
-        { name: 'Rooms', href: '#rooms' },
-        { name: 'Waiver', href: '/waiver' },
-        { name: 'Location', href: '#location' },
-        { name: 'Contact', href: '/contact' },
-    ];
+export function Navbar() {
+    const [isOpen, setIsOpen] = useState(false);
+    const [isCartOpen, setIsCartOpen] = useState(false);
 
     return (
-        <>
-            {/* Construction Banner */}
-            <div className="fixed top-0 left-0 right-0 z-[60] bg-primary text-white text-center py-2 text-xs font-bold tracking-widest uppercase">
-                Website Under Construction
-            </div>
-
-            <nav
-                className={cn(
-                    'fixed top-8 left-0 right-0 z-50 transition-all duration-500 border-b border-white/0',
-                    isScrolled ? 'bg-black/80 backdrop-blur-md border-white/5 py-4' : 'bg-transparent py-6'
-                )}
-            >
-                <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
-                    {/* Logo - always goes to landing page; on home, scroll to top */}
-                    <Link
-                        href="/"
-                        onClick={(e) => {
-                            if (pathname === '/') {
-                                e.preventDefault();
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }
-                        }}
-                        className="text-3xl md:text-4xl font-bold tracking-[0.2em] text-white uppercase relative"
-                        style={{ fontFamily: 'var(--font-cinzel)' }}
-                    >
-                        LOCK & LORE
-                    </Link>
-
-                    {/* Desktop Links */}
-                    <div className="hidden md:flex items-center gap-8">
-                        {navLinks.map((link) => {
-                            // Special handling for Rooms link
-                            if (link.name === 'Rooms') {
-                                return (
-                                    <button
-                                        key={link.name}
-                                        onClick={() => {
-                                            if (!isHomePage) {
-                                                router.push('/#rooms');
-                                                return;
-                                            }
-                                            const element = document.getElementById('rooms');
-                                            if (element) {
-                                                const offset = -150;
-                                                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-                                                const offsetPosition = elementPosition - offset;
-
-                                                window.scrollTo({
-                                                    top: offsetPosition,
-                                                    behavior: 'smooth'
-                                                });
-                                            }
-                                        }}
-                                        className="text-base text-gray-400 px-4 py-1.5 transition-all duration-300 tracking-wide hover:text-white"
-                                    >
-                                        {link.name}
-                                    </button>
-                                );
-                            }
-
-                            // Special handling for Location link - scroll to location section
-                            if (link.name === 'Location') {
-                                return (
-                                    <button
-                                        key={link.name}
-                                        onClick={() => {
-                                            if (!isHomePage) {
-                                                router.push('/#location');
-                                                return;
-                                            }
-                                            const element = document.getElementById('location');
-                                            if (element) {
-                                                const offset = 25;
-                                                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-                                                const offsetPosition = elementPosition - offset;
-
-                                                window.scrollTo({
-                                                    top: offsetPosition,
-                                                    behavior: 'smooth'
-                                                });
-                                            }
-                                        }}
-                                        className="text-base text-gray-400 px-4 py-1.5 transition-all duration-300 tracking-wide hover:text-white"
-                                    >
-                                        {link.name}
-                                    </button>
-                                );
-                            }
-
-                            return (
-                                <Link
-                                    key={link.name}
-                                    href={link.href}
-                                    className="text-base text-gray-400 px-4 py-1.5 transition-all duration-300 tracking-wide hover:text-white flex items-center"
-                                >
-                                    {link.name}
-                                </Link>
-                            );
-                        })}
+        <nav className="fixed top-0 w-full z-50 bg-white border-b border-gray-200 shadow-sm">
+            <div className="w-full px-4 sm:px-6 lg:px-12">
+                <div className="flex items-center justify-between h-16">
+                    {/* Logo Section - Left */}
+                    <div className="flex-shrink-0 ml-8 lg:ml-16">
+                        <Link href="/" className="text-2xl font-heading font-bold text-primary tracking-wider uppercase drop-shadow-sm">
+                            Lock & Lore
+                        </Link>
                     </div>
 
-                    {/* Mobile Toggle - Improved touch target */}
-                    <button
-                        className="md:hidden text-white z-[80] p-3 -mr-3 min-w-[44px] min-h-[44px] flex items-center justify-center"
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        aria-label="Toggle menu"
-                    >
-                        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                    </button>
-                </div>
-            </nav>
+                    {/* Navigation & CTA - Right */}
+                    <div className="hidden md:flex items-center space-x-8 mr-4 lg:mr-8">
+                        <div className="flex items-baseline space-x-8">
+                            <Link href="/#rooms" className="text-gray-900 hover:text-primary transition-colors px-3 py-1 rounded-md text-sm font-bold tracking-wide">ESCAPE ROOMS</Link>
+                            <Link href="/contact" className="text-gray-900 hover:text-primary transition-colors px-3 py-1 rounded-md text-sm font-bold tracking-wide">CONTACT</Link>
+                        </div>
 
-            {/* Mobile Menu Backdrop - Outside nav to avoid transform issues */}
-            <div
-                className={cn(
-                    'fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 md:hidden z-[60]',
-                    isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                )}
-                onClick={() => setIsMobileMenuOpen(false)}
-            />
-
-            {/* Mobile Menu Sidebar - Outside nav to avoid transform issues */}
-            <div
-                className={cn(
-                    'fixed top-0 right-0 bottom-0 w-[80%] bg-black flex flex-col items-center justify-center gap-6 transition-transform duration-300 ease-in-out md:hidden z-[70]',
-                    isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-                )}
-            >
-                {navLinks.map((link) => {
-                    // Special handling for Rooms link in mobile menu
-                    if (link.name === 'Rooms') {
-                        return (
-                            <button
-                                key={link.name}
-                                onClick={() => {
-                                    setIsMobileMenuOpen(false);
-                                    if (!isHomePage) {
-                                        router.push('/#rooms');
-                                        return;
-                                    }
-                                    setTimeout(() => {
-                                        const element = document.getElementById('rooms');
-                                        if (element) {
-                                            const offset = -150;
-                                            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-                                            const offsetPosition = elementPosition - offset;
-                                            window.scrollTo({
-                                                top: offsetPosition,
-                                                behavior: 'smooth'
-                                            });
-                                        }
-                                    }, 100);
-                                }}
-                                className="text-2xl font-light text-white tracking-widest uppercase min-h-[44px] px-4"
-                            >
-                                {link.name}
-                            </button>
-                        );
-                    }
-
-                    // Special handling for Location link
-                    if (link.name === 'Location') {
-                        return (
-                            <button
-                                key={link.name}
-                                onClick={() => {
-                                    setIsMobileMenuOpen(false);
-                                    if (!isHomePage) {
-                                        router.push('/#location');
-                                        return;
-                                    }
-                                    setTimeout(() => {
-                                        const element = document.getElementById('location');
-                                        if (element) {
-                                            const offset = 0;
-                                            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-                                            const offsetPosition = elementPosition - offset;
-                                            window.scrollTo({
-                                                top: offsetPosition,
-                                                behavior: 'smooth'
-                                            });
-                                        }
-                                    }, 100);
-                                }}
-                                className="text-2xl font-light text-white tracking-widest uppercase min-h-[44px] px-4"
-                            >
-                                {link.name}
-                            </button>
-                        );
-                    }
-
-                    return (
-                        <Link
-                            key={link.name}
-                            href={link.href}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="text-2xl font-light text-white tracking-widest uppercase min-h-[44px] flex items-center px-4"
+                        {/* Cart Button */}
+                        <button
+                            onClick={() => setIsCartOpen(true)}
+                            className="p-2 text-gray-900 hover:text-primary transition-colors relative group"
+                            aria-label="Open cart"
                         >
-                            {link.name}
-                        </Link>
-                    );
-                })}
+                            <ShoppingBag className="w-6 h-6" />
+                            <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">1</span>
+                        </button>
+
+                        <button className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-6 rounded-full transition-all uppercase tracking-wide text-sm">
+                            Book Now
+                        </button>
+                    </div>
+
+                    {/* Mobile Menu Button */}
+                    <div className="-mr-2 flex md:hidden">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setIsCartOpen(true)}
+                                className="p-2 text-gray-900 hover:text-primary transition-colors relative"
+                            >
+                                <ShoppingBag className="w-6 h-6" />
+                                <span className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">1</span>
+                            </button>
+                            <button
+                                onClick={() => setIsOpen(!isOpen)}
+                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-primary hover:bg-gray-100 focus:outline-none"
+                            >
+                                <span className="sr-only">Open main menu</span>
+                                {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </>
+
+            {/* Mobile menu */}
+            {isOpen && (
+                <div className="md:hidden bg-white border-b border-gray-200">
+                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                        <Link href="/" className="block text-gray-900 hover:text-primary px-3 py-2 rounded-md text-base font-medium">HOME</Link>
+                        <Link href="#" className="block text-gray-900 hover:text-primary px-3 py-2 rounded-md text-base font-medium">ESCAPE ROOMS</Link>
+                        <Link href="#" className="block text-gray-900 hover:text-primary px-3 py-2 rounded-md text-base font-medium">CONTACT US</Link>
+                        <button className="w-full mt-4 bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-full transition-all uppercase tracking-wide">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Cart Drawer */}
+            <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+        </nav>
     );
 }

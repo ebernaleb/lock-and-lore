@@ -1,77 +1,53 @@
-'use client';
+import { MapPin, Ticket } from "lucide-react";
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { FallingPattern } from '@/components/ui/falling-pattern';
+export function Hero() {
+    return (
+        <div className="relative min-h-[600px] h-[75vh] flex items-center justify-center overflow-hidden bg-black">
+            {/* Background Image */}
+            <div
+                className="absolute inset-0 z-0 bg-cover bg-no-repeat"
+                style={{
+                    backgroundImage: "url('/images/hero_img.png')",
+                    backgroundSize: "110%",
+                    backgroundPosition: "20% 45%", // 20% x-pos to show left side (shifting image right)
+                }}
+            >
+            </div>
+            {/* Left side gradient for text readability with matching blur */}
+            <div className="absolute inset-y-0 left-0 w-full bg-gradient-to-r from-black/90 via-black/50 to-transparent z-0 backdrop-blur-[3px] [mask-image:linear-gradient(to_right,black,transparent)]"></div>
 
-export default function Hero() {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden">
-      {/* Animated Falling Pattern Background */}
-      <div className="absolute inset-0 opacity-40">
-        <FallingPattern
-          color="#7f1d1d"
-          backgroundColor="#000000"
-          duration={150}
-        />
-      </div>
 
-      {/* Bottom Gradient Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-b from-transparent to-black z-10 pointer-events-none" />
+            <div className="relative z-10 w-full pl-6 sm:pl-12 lg:pl-20 h-full flex items-start pt-32 md:pt-52">
+                <div className="w-full max-w-4xl">
+                    {/* Left Column: Text Content */}
+                    <div className="flex flex-col items-start space-y-4">
+                        <h1 className="text-[2.75rem] md:text-[4rem] font-black leading-tight text-white drop-shadow-xl font-heading tracking-normal [text-shadow:0_4px_12px_rgba(0,0,0,0.3),0_8px_24px_rgba(0,0,0,0.1)]">
+                            The Door Is Locked.<br />
+                            <span className="text-primary whitespace-nowrap">Your Mind Is the Key.</span>
+                        </h1>
 
-      {/* Main Content */}
-      <div className="relative z-10 container px-4 md:px-8 mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          {/* Company Name */}
-          <h1
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-wider leading-none mb-4 text-white"
-            style={{
-              fontFamily: 'var(--font-cinzel)',
-              textShadow: `
-                0 4px 8px rgba(0, 0, 0, 0.8),
-                0 8px 16px rgba(0, 0, 0, 0.6)
-              `
-            }}
-          >
-            Lock & Lore
-          </h1>
+                        <p className="text-lg md:text-xl text-gray-200 max-w-lg leading-relaxed">
+                            Immersive, private escape rooms in Virginia Beach, Virginia. Work together, solve puzzles, and have the adventure of a lifetime!
+                        </p>
 
-          {/* Tagline */}
-          <p className="text-gray-400 text-lg md:text-xl tracking-[0.3em] uppercase mb-12">
-            Immersive Escape Rooms
-          </p>
+                        <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                            <button className="flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-full transition-all uppercase tracking-wide text-base">
+                                <Ticket className="w-4 h-4" />
+                                Book Your Escape
+                            </button>
+                            <button className="flex items-center justify-center gap-2 bg-transparent hover:bg-white/10 border-2 border-white/30 text-white font-bold py-3 px-6 rounded-full transition-all uppercase tracking-wide text-base backdrop-blur-sm">
+                                <MapPin className="w-4 h-4" />
+                                Our Location
+                            </button>
+                        </div>
+                    </div>
 
-          {/* View Our Rooms Button */}
-          <button
-            onClick={() => {
-              const element = document.getElementById('rooms');
-              if (element) {
-                const offset = -100;
-                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-                const offsetPosition = elementPosition + offset;
-                window.scrollTo({
-                  top: offsetPosition,
-                  behavior: 'smooth'
-                });
-              }
-            }}
-            className="px-8 py-3 bg-primary text-white font-semibold tracking-wide uppercase rounded-md transition-all duration-150 hover:translate-y-[2px] hover:shadow-none active:translate-y-[3px]"
-            style={{
-              boxShadow: `
-                0 4px 0 0 #4a0f0f,
-                0 6px 8px rgba(0, 0, 0, 0.4)
-              `,
-              borderTop: '1px solid rgba(255, 255, 255, 0.1)'
-            }}
-          >
-            View Our Rooms
-          </button>
-        </motion.div>
-      </div>
-    </section>
-  );
+                    {/* Right Column: Placeholder for future content */}
+                    <div className="hidden md:block">
+                        {/* Future image or content goes here */}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }

@@ -1,47 +1,39 @@
-import type { Metadata } from 'next';
-import { Inter, Cinzel } from 'next/font/google';
-import './globals.css';
-import { cn } from '@/lib/utils';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import localFont from "next/font/local";
+import "./globals.css";
+import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const cinzel = Cinzel({ subsets: ['latin'], variable: '--font-cinzel' });
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const dosis = localFont({
+  src: "./fonts/dosis-extrabold.ttf",
+  variable: "--font-dosis",
+  weight: "800",
+});
 
 export const metadata: Metadata = {
-  title: 'Lock and Lore | Immersive Private Escape Rooms in Virginia Beach',
-  description: 'Book your private escape room adventure in Virginia Beach. 60 minutes. Multiple ominous themes. Dates, friends, and corporate team building.',
-  keywords: ['escape room', 'virginia beach', 'scary escape room', 'team building', 'puzzle room', 'lock and lore'],
-  openGraph: {
-    title: 'Lock and Lore | Can You Escape?',
-    description: 'Immersive private escape rooms in Virginia Beach. Choose your theme and book now.',
-    url: 'https://lockandlore.com', // Placeholder
-    siteName: 'Lock and Lore',
-    locale: 'en_US',
-    type: 'website',
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
-
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
-  themeColor: '#0a0a0a',
-  viewportFit: 'cover',
+  title: "Lock & Lore Escape Rooms",
+  description: "Book your next adventure!",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} ${cinzel.variable} font-sans bg-[rgb(var(--background))] text-[rgb(var(--foreground))] min-h-screen selection:bg-[rgb(var(--primary))] selection:text-white`}>
-
+    <html lang="en">
+      <body
+        className={cn(
+          inter.variable,
+          dosis.variable,
+          "antialiased text-foreground font-sans"
+        )}
+      >
         {children}
       </body>
     </html>
