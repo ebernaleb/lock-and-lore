@@ -1,90 +1,109 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Menu, X, ChevronDown, ShoppingBag } from "lucide-react";
-// import { Button } from "@/components/ui/button"; 
-// Removed unused import.
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CartDrawer } from "./CartDrawer";
-
-// I'll create a simple reusable Button component inline or in a separate file if needed. For now I'll use standard HTML button with classes.
 
 export function Navbar() {
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
-    const [isCartOpen, setIsCartOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        // Check initial scroll position (e.g. if user refreshes mid-page)
+        handleScroll();
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        // Navigate to homepage
+        router.push("/");
+        // Scroll to top smoothly
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
     return (
-        <nav className="fixed top-0 w-full z-50 bg-white border-b border-gray-200 shadow-sm">
+        <nav className={cn(
+            "fixed top-0 w-full z-50 transition-all duration-300",
+            scrolled ? "bg-black/95 backdrop-blur-md shadow-lg shadow-black/20" : "bg-transparent"
+        )}>
             <div className="w-full px-4 sm:px-6 lg:px-12">
-                <div className="flex items-center justify-between h-16">
+                <div className="flex items-center justify-between h-18">
                     {/* Logo Section - Left */}
                     <div className="flex-shrink-0 ml-8 lg:ml-16">
-                        <Link href="/" className="text-2xl font-heading font-bold text-primary tracking-wider uppercase drop-shadow-sm">
-                            Lock & Lore
+                        <Link
+                            href="/"
+                            onClick={handleLogoClick}
+                            className="relative block"
+                        >
+                            <Image
+                                src="/images/mainlogo.png"
+                                alt="Lock & Lore"
+                                width={320}
+                                height={107}
+                                className="h-20 w-auto"
+                                priority
+                            />
                         </Link>
                     </div>
 
                     {/* Navigation & CTA - Right */}
-                    <div className="hidden md:flex items-center space-x-8 mr-4 lg:mr-8">
-                        <div className="flex items-baseline space-x-8">
-                            <Link href="/#rooms" className="text-gray-900 hover:text-primary transition-colors px-3 py-1 rounded-md text-sm font-bold tracking-wide">ESCAPE ROOMS</Link>
-                            <Link href="/contact" className="text-gray-900 hover:text-primary transition-colors px-3 py-1 rounded-md text-sm font-bold tracking-wide">CONTACT</Link>
+                    <div className="hidden md:flex items-center gap-10 mr-4 lg:mr-8">
+                        <div className="flex items-center gap-8">
+                            <Link href="/rooms" className="text-gray-200 hover:text-white transition-colors duration-200 text-[13px] font-semibold tracking-[0.12em] uppercase">Escape Rooms</Link>
+                            <Link href="/faq" className="text-gray-200 hover:text-white transition-colors duration-200 text-[13px] font-semibold tracking-[0.12em] uppercase">FAQ</Link>
+                            <Link href="/contact" className="text-gray-200 hover:text-white transition-colors duration-200 text-[13px] font-semibold tracking-[0.12em] uppercase">Contact</Link>
                         </div>
 
-                        {/* Cart Button */}
-                        <button
-                            onClick={() => setIsCartOpen(true)}
-                            className="p-2 text-gray-900 hover:text-primary transition-colors relative group"
-                            aria-label="Open cart"
+                        <Link
+                            href="/rooms"
+                            className="bg-primary hover:bg-primary-dark text-neutral-950 font-semibold py-1.5 px-4 text-sm rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none uppercase tracking-[0.1em]"
                         >
-                            <ShoppingBag className="w-6 h-6" />
-                            <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">1</span>
-                        </button>
-
-                        <button className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-6 rounded-full transition-all uppercase tracking-wide text-sm">
-                            Book Now
-                        </button>
+                            <span className="relative z-10">Book Now</span>
+                        </Link>
                     </div>
 
                     {/* Mobile Menu Button */}
                     <div className="-mr-2 flex md:hidden">
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => setIsCartOpen(true)}
-                                className="p-2 text-gray-900 hover:text-primary transition-colors relative"
-                            >
-                                <ShoppingBag className="w-6 h-6" />
-                                <span className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">1</span>
-                            </button>
-                            <button
-                                onClick={() => setIsOpen(!isOpen)}
-                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-primary hover:bg-gray-100 focus:outline-none"
-                            >
-                                <span className="sr-only">Open main menu</span>
-                                {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="inline-flex items-center justify-center p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 focus:outline-none transition-colors duration-200"
+                        >
+                            <span className="sr-only">Open main menu</span>
+                            {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
+                        </button>
                     </div>
                 </div>
             </div>
 
             {/* Mobile menu */}
             {isOpen && (
-                <div className="md:hidden bg-white border-b border-gray-200">
-                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                        <Link href="/" className="block text-gray-900 hover:text-primary px-3 py-2 rounded-md text-base font-medium">HOME</Link>
-                        <Link href="#" className="block text-gray-900 hover:text-primary px-3 py-2 rounded-md text-base font-medium">ESCAPE ROOMS</Link>
-                        <Link href="#" className="block text-gray-900 hover:text-primary px-3 py-2 rounded-md text-base font-medium">CONTACT US</Link>
-                        <button className="w-full mt-4 bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-full transition-all uppercase tracking-wide">
-                            Book Now
-                        </button>
+                <div className="md:hidden bg-black/95 backdrop-blur-md border-t border-white/5">
+                    <div className="px-5 pt-4 pb-5 space-y-1">
+                        <Link href="/" onClick={() => setIsOpen(false)} className="block text-gray-200 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg text-sm font-semibold tracking-[0.1em] uppercase transition-colors duration-200">Home</Link>
+                        <Link href="/rooms" onClick={() => setIsOpen(false)} className="block text-gray-200 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg text-sm font-semibold tracking-[0.1em] uppercase transition-colors duration-200">Escape Rooms</Link>
+                        <Link href="/faq" onClick={() => setIsOpen(false)} className="block text-gray-200 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg text-sm font-semibold tracking-[0.1em] uppercase transition-colors duration-200">FAQ</Link>
+                        <Link href="/contact" onClick={() => setIsOpen(false)} className="block text-gray-200 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg text-sm font-semibold tracking-[0.1em] uppercase transition-colors duration-200">Contact</Link>
+                        <div className="pt-3">
+                            <Link
+                                href="/rooms"
+                                onClick={() => setIsOpen(false)}
+                                className="block w-full text-center bg-primary hover:bg-primary-dark text-neutral-950 font-medium py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none uppercase tracking-[0.1em]"
+                            >
+                                <span className="relative z-10">Book Now</span>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             )}
-
-            {/* Cart Drawer */}
-            <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
         </nav>
     );
 }

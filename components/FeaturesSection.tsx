@@ -1,47 +1,120 @@
 "use client";
 
-import { Heart, Users, ShieldCheck, Zap, Smile, Puzzle } from "lucide-react";
+import { Search, Users, MapPin, Trophy } from "lucide-react";
 
-const features = [
-    { icon: Heart, title: "Family Friendly", desc: "Themes appropriate for all ages. No scary stuff!" },
-    { icon: Users, title: "Perfect for Groups", desc: "Great for team building, parties, and friends." },
-    { icon: ShieldCheck, title: "Safe And Comfortable", desc: "Private rooms, clean environments." },
-    { icon: Zap, title: "8 Unique Themes", desc: "Immersive storylines and detailed sets." },
-    { icon: Smile, title: "Unlimited Hints", desc: "We want you to have fun, not get stuck!" },
-    { icon: Puzzle, title: "High-Tech Puzzles", desc: "Magical locks and sensors, not just padlocks." },
+// ---------------------------------------------------------------------------
+// Step Data
+// ---------------------------------------------------------------------------
+
+const steps = [
+    {
+        number: "01",
+        icon: Search,
+        title: "Pick Your Adventure",
+        description:
+            "Browse our escape rooms, choose a theme that excites your group, and find an available time slot that works for everyone.",
+        iconBg: "bg-primary/15",
+        hoverBorder: "hover:border-primary/20",
+    },
+    {
+        number: "02",
+        icon: Users,
+        title: "Rally Your Crew",
+        description:
+            "Gather 2 to 10 friends, family members, or coworkers. Every booking is completely private -- just your team in the room.",
+        iconBg: "bg-secondary/15",
+        hoverBorder: "hover:border-secondary/20",
+    },
+    {
+        number: "03",
+        icon: MapPin,
+        title: "Arrive & Get Briefed",
+        description:
+            "Check in 15 minutes early, meet your dedicated Game Master, and get immersed in the story before the clock starts.",
+        iconBg: "bg-blue-500/15",
+        hoverBorder: "hover:border-blue-500/20",
+    },
+    {
+        number: "04",
+        icon: Trophy,
+        title: "Solve, Escape, Celebrate",
+        description:
+            "Work together through 60 minutes of puzzles and discovery. Win or lose, finish with a group photo and bragging rights.",
+        iconBg: "bg-green-500/15",
+        hoverBorder: "hover:border-green-500/20",
+    },
 ];
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 
 export function FeaturesSection() {
     return (
-        <section className="py-24 bg-[#f9f9f9] relative overflow-hidden">
-            {/* Decorative background elements if needed */}
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-50 via-white to-white opacity-50 pointer-events-none"></div>
+        <section className="py-20 sm:py-24 bg-black relative overflow-hidden">
+            {/* Decorative background elements */}
+            <div
+                className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-950/30 via-black to-black opacity-50 pointer-events-none"
+                aria-hidden="true"
+            />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                        Adventure Awaits – <span className="text-primary">Fun for All Ages!</span>
+                {/* Section header */}
+                <div className="text-center mb-12 sm:mb-16">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+                        How It <span className="text-primary">Works</span>
                     </h2>
-                    <p className="max-w-2xl mx-auto text-gray-600">
-                        Why choose us? We prioritize fun, immersion, and making sure everyone has a blast.
+                    <p className="max-w-2xl mx-auto text-gray-400">
+                        From booking to bragging rights in four simple steps. No experience
+                        needed -- just bring your curiosity and your crew.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {features.map((f, i) => (
-                        <div key={i} className="bg-white border border-gray-100 p-8 rounded-3xl transition-all hover:shadow-md flex flex-col items-start text-left group shadow-sm">
-                            <div className="bg-accent/20 p-3 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                                <f.icon className="w-8 h-8 text-primary" />
+                {/* Steps grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+                    {steps.map((step, i) => (
+                        <div
+                            key={i}
+                            className={`
+                                relative bg-neutral-900 rounded-3xl p-6 sm:p-7
+                                flex flex-col items-start text-left
+                                transition-all duration-300
+                                hover:bg-neutral-800
+                                border border-transparent ${step.hoverBorder}
+                                group
+                            `}
+                        >
+                            {/* Step number watermark */}
+                            <span
+                                className="absolute top-4 right-5 text-[4rem] sm:text-[4.5rem] font-heading font-extrabold leading-none text-white/[0.03] select-none pointer-events-none"
+                                aria-hidden="true"
+                            >
+                                {step.number}
+                            </span>
+
+                            {/* Icon */}
+                            <div
+                                className={`${step.iconBg} p-3 rounded-2xl mb-5 group-hover:scale-110 transition-transform duration-300`}
+                            >
+                                <step.icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">{f.title}</h3>
-                            <p className="text-gray-500">{f.desc}</p>
+
+                            {/* Step label */}
+                            <span className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-2">
+                                Step {step.number}
+                            </span>
+
+                            {/* Title */}
+                            <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                                {step.title}
+                            </h3>
+
+                            {/* Description */}
+                            <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
+                                {step.description}
+                            </p>
                         </div>
                     ))}
-                </div>
-                <div className="mt-16 text-center">
-                    <button className="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-xl uppercase tracking-wide">
-                        Book Your Adventure
-                    </button>
                 </div>
             </div>
         </section>

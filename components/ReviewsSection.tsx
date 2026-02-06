@@ -1,86 +1,212 @@
 "use client";
 
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
-// import Image from "next/image";
+import { Star, Quote, Users, ThumbsUp } from "lucide-react";
+import Link from "next/link";
+
+// ---------------------------------------------------------------------------
+// Review Data
+// ---------------------------------------------------------------------------
 
 const reviews = [
-    {
-        name: "Sarah Jenkins",
-        date: "2 days ago",
-        rating: 5,
-        text: "Absolutely amazing experience! The 'Escape From Oz' room was so detailed and fun. Our game master was fantastic!",
-        avatar: "S"
-    },
-    {
-        name: "Mike T.",
-        date: "1 week ago",
-        rating: 5,
-        text: "We did the Mad Hatter room for my daughter's birthday. Best party ever. The puzzles were challenging but fair.",
-        avatar: "M"
-    },
-    {
-        name: "The Travelers",
-        date: "3 weeks ago",
-        rating: 5,
-        text: "We've done escape rooms all over the country, and this ranks in the top 5! High production value.",
-        avatar: "T"
-    }
+  {
+    name: "Sarah Jenkins",
+    date: "2 days ago",
+    rating: 5,
+    text: "Absolutely amazing experience! The 'Skybound Dynasty' room was so detailed and fun. Our game master was fantastic and made us feel like real adventurers!",
+    avatar: "S",
+    source: "Google",
+    room: "Skybound Dynasty",
+  },
+  {
+    name: "Mike T.",
+    date: "1 week ago",
+    rating: 5,
+    text: "We did the Echo Chamber for my daughter's birthday. Best party ever! The puzzles were challenging but fair, and the staff went above and beyond.",
+    avatar: "M",
+    source: "Google",
+    room: "Echo Chamber",
+  },
+  {
+    name: "The Travelers",
+    date: "3 weeks ago",
+    rating: 5,
+    text: "We've done escape rooms all over the country, and Lock & Lore ranks in the top 5! High production value, incredible set design, and the story actually matters.",
+    avatar: "T",
+    source: "Google",
+    room: "Escape the Simulation",
+  },
+  {
+    name: "Jessica & Team",
+    date: "1 month ago",
+    rating: 5,
+    text: "Brought our whole office team of 8 for a team-building event. Everyone was engaged and had a blast. Already planning our next visit!",
+    avatar: "J",
+    source: "Google",
+    room: "Skybound Dynasty",
+  },
+  {
+    name: "David R.",
+    date: "2 weeks ago",
+    rating: 5,
+    text: "The attention to detail in every room is insane. You can tell the creators are passionate about what they do. Worth every penny!",
+    avatar: "D",
+    source: "Google",
+    room: "Echo Chamber",
+  },
+  {
+    name: "The Chen Family",
+    date: "5 days ago",
+    rating: 5,
+    text: "Family-friendly and genuinely fun for all ages. Our kids (10 and 13) were completely immersed. We escaped with 3 minutes to spare!",
+    avatar: "C",
+    source: "Google",
+    room: "Skybound Dynasty",
+  },
 ];
 
+// ---------------------------------------------------------------------------
+// Aggregate Stats
+// ---------------------------------------------------------------------------
+
+const stats = {
+  averageRating: 4.9,
+  totalReviews: 200,
+  escapeRate: 47,
+  groupsServed: "2,500+",
+};
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex gap-0.5" aria-label={`${rating} out of 5 stars`}>
+      {[...Array(5)].map((_, i) => (
+        <Star
+          key={i}
+          className={`w-4 h-4 ${
+            i < rating
+              ? "text-yellow-400 fill-yellow-400"
+              : "text-neutral-700 fill-neutral-700"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function ReviewsSection() {
-    return (
-        <section className="py-24 bg-[#f9f9f9] relative">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                        Happy Adventurers – <span className="text-primary">Everywhere!</span>
-                    </h2>
-                    <p className="max-w-xl mx-auto text-gray-600">
-                        Join thousands of happy escapers. See what they have to say!
-                    </p>
-                </div>
+  return (
+    <section className="py-20 sm:py-24 bg-black relative" id="reviews">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section header */}
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+            Trusted by <span className="text-primary">Thousands</span> of
+            Adventurers
+          </h2>
+          <p className="max-w-xl mx-auto text-gray-400">
+            See why groups, families, and teams keep coming back for more.
+          </p>
+        </div>
 
-                <div className="relative">
-                    {/* Navigation buttons (visual only for carbon copy static view, carousel logic usually needed) */}
-                    <div className="absolute top-1/2 -left-4 md:-left-12 transform -translate-y-1/2 z-10">
-                        <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100"><ChevronLeft className="w-6 h-6 text-gray-600" /></button>
-                    </div>
-                    <div className="absolute top-1/2 -right-4 md:-right-12 transform -translate-y-1/2 z-10">
-                        <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100"><ChevronRight className="w-6 h-6 text-gray-600" /></button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {reviews.map((r, i) => (
-                            <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-4">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-xl">
-                                        {r.avatar}
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-gray-900">{r.name}</h4>
-                                        <span className="text-xs text-gray-500">{r.date}</span>
-                                    </div>
-                                    <div className="ml-auto flex items-center gap-1 opacity-50">
-                                        <span className="font-bold text-xs text-gray-500">Google</span>
-                                    </div>
-                                </div>
-                                <div className="flex text-yellow-400">
-                                    {[...Array(5)].map((_, starsIndex) => (
-                                        <Star key={starsIndex} className="w-4 h-4 fill-current" />
-                                    ))}
-                                </div>
-                                <p className="text-gray-600 text-sm italic">"{r.text}"</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="mt-12 text-center">
-                    <button className="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-xl uppercase tracking-wide">
-                        Book Your Escape
-                    </button>
-                </div>
+        {/* Aggregate trust bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12 sm:mb-16">
+          <div className="bg-neutral-900 rounded-2xl p-5 sm:p-6 text-center">
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+              <span className="text-2xl sm:text-3xl font-bold text-white">
+                {stats.averageRating}
+              </span>
             </div>
-        </section>
-    );
+            <p className="text-sm text-gray-500">Average Rating</p>
+          </div>
+          <div className="bg-neutral-900 rounded-2xl p-5 sm:p-6 text-center">
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <ThumbsUp className="w-6 h-6 text-primary" />
+              <span className="text-2xl sm:text-3xl font-bold text-white">
+                {stats.totalReviews}+
+              </span>
+            </div>
+            <p className="text-sm text-gray-500">5-Star Reviews</p>
+          </div>
+          <div className="bg-neutral-900 rounded-2xl p-5 sm:p-6 text-center">
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <Users className="w-6 h-6 text-primary" />
+              <span className="text-2xl sm:text-3xl font-bold text-white">
+                {stats.groupsServed}
+              </span>
+            </div>
+            <p className="text-sm text-gray-500">Groups Served</p>
+          </div>
+          <div className="bg-neutral-900 rounded-2xl p-5 sm:p-6 text-center">
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <span className="text-2xl sm:text-3xl font-bold text-white">
+                {stats.escapeRate}%
+              </span>
+            </div>
+            <p className="text-sm text-gray-500">Escape Rate</p>
+          </div>
+        </div>
+
+        {/* Reviews grid - 2 cols on tablet, 3 on desktop, 1 on mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          {reviews.map((review, index) => (
+            <div
+              key={index}
+              className="bg-neutral-900 p-6 rounded-2xl flex flex-col gap-3 hover:bg-neutral-800 transition-colors duration-300"
+            >
+              {/* Review header */}
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
+                  {review.avatar}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-white text-sm truncate">
+                    {review.name}
+                  </h4>
+                  <span className="text-xs text-gray-400">{review.date}</span>
+                </div>
+                <span className="text-xs font-semibold text-gray-400 flex-shrink-0">
+                  {review.source}
+                </span>
+              </div>
+
+              {/* Stars */}
+              <StarRating rating={review.rating} />
+
+              {/* Review text */}
+              <div className="relative">
+                <Quote
+                  className="absolute -top-1 -left-1 w-5 h-5 text-primary/10"
+                  aria-hidden="true"
+                />
+                <p className="text-gray-300 text-sm leading-relaxed pl-4">
+                  {review.text}
+                </p>
+              </div>
+
+              {/* Room tag */}
+              <div className="mt-auto pt-2">
+                <span className="inline-block text-xs font-medium text-primary/70 bg-primary/5 px-2.5 py-1 rounded-full">
+                  {review.room}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="mt-12 sm:mt-16 text-center">
+          <Link
+            href="/rooms"
+            className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-neutral-950 font-medium px-6 py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none uppercase tracking-wide"
+          >
+            <span className="relative z-10">Check Availability</span>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
 }

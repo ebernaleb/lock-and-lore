@@ -10,15 +10,22 @@ export function GiftCardSection() {
 
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2669&auto=format&fit=crop')] bg-cover bg-center opacity-30 mix-blend-overlay"></div>
 
-            <div className="max-w-5xl mx-auto px-4 relative z-10 bg-white rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            <div className="max-w-5xl mx-auto px-4 relative z-10 bg-neutral-900 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8 md:gap-12">
                 <div className="flex-1 space-y-4">
+                    <Image
+                        src="/images/mainlogo.png"
+                        alt="Lock & Lore"
+                        width={240}
+                        height={80}
+                        className="h-20 w-auto mb-4"
+                    />
                     <h2 className="text-3xl md:text-5xl font-bold font-heading text-primary-dark uppercase">Gift Cards</h2>
-                    <p className="text-gray-600">
+                    <p className="text-gray-300">
                         Give the gift of adventure! Perfect for birthdays, holidays, or just because.
                         Available in any amount.
                     </p>
-                    <button className="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-full transition-all uppercase tracking-wide mt-4">
-                        Buy Now
+                    <button className="bg-primary hover:bg-primary-dark text-neutral-950 font-medium px-6 py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none uppercase tracking-wide mt-4">
+                        <span className="relative z-10">Buy Now</span>
                     </button>
                 </div>
                 <div className="flex-1 w-full relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
@@ -36,66 +43,73 @@ export function GiftCardSection() {
 
 export function Footer() {
     return (
-        <footer className="bg-[#f9f9f9] py-16 relative">
+        <footer className="bg-black pt-8 pb-8 mt-16 relative">
             <div className="w-full px-4 sm:px-6 lg:px-8">
-                {/* Main Footer Container with Light Red Background */}
-                <div className="bg-red-100 rounded-[2rem] p-12 md:p-16 shadow-sm">
+                {/* Main Footer Container */}
+                <div className="bg-neutral-900 rounded-[2rem] px-12 md:px-16 pt-4 md:pt-6 pb-12 md:pb-16">
 
 
 
 
                     {/* Footer Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                        <div className="space-y-4">
-                            <Link href="/" className="text-2xl font-heading font-bold text-primary tracking-wider uppercase inline-block mb-2">
-                                Lock & Lore
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12 md:items-center">
+                        <div className="space-y-4 md:ml-12">
+                            <Link href="/" className="inline-block mb-2">
+                                <Image
+                                    src="/images/fancy_logo.png"
+                                    alt="Lock & Lore"
+                                    width={864}
+                                    height={288}
+                                    className="h-72 w-auto"
+                                />
                             </Link>
-                            <p className="text-gray-600 text-sm leading-relaxed">
-                                Premier immersive escape room experiences. Great for families, friends, and team building.
-                            </p>
                         </div>
 
-                        <div>
-                            <h4 className="text-lg font-bold mb-4 uppercase tracking-wider text-gray-900">Quick Links</h4>
-                            <ul className="space-y-2 text-gray-600 text-sm">
-                                <li><Link href="/" className="hover:text-primary transition-colors">Our Rooms</Link></li>
-                                <li><Link href="/" className="hover:text-primary transition-colors">Book Now</Link></li>
+                        <div className="md:ml-16 md:self-center">
+                            <h4 className="text-lg font-bold mb-4 uppercase tracking-wider text-white">Quick Links</h4>
+                            <ul className="space-y-2 text-gray-400 text-sm">
+                                <li><Link href="/rooms" className="hover:text-primary transition-colors">Our Rooms</Link></li>
+                                <li><Link href="/rooms" className="hover:text-primary transition-colors">Book Now</Link></li>
                                 <li><Link href="/" className="hover:text-primary transition-colors">Gift Cards</Link></li>
-                                <li><Link href="/" className="hover:text-primary transition-colors">FAQ</Link></li>
-                                <li><Link href="/" className="hover:text-primary transition-colors">Contact Us</Link></li>
+                                <li><Link href="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
+                                <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
                             </ul>
                         </div>
 
-                        <div>
-                            <h4 className="text-lg font-bold mb-4 uppercase tracking-wider text-gray-900">Contact Us</h4>
-                            <ul className="space-y-4 text-gray-600 text-sm">
+                        <div className="md:self-center">
+                            <h4 className="text-lg font-bold mb-4 uppercase tracking-wider text-white">Contact Us</h4>
+                            <ul className="space-y-4 text-gray-400 text-sm">
                                 <li className="flex gap-3">
                                     <MapPin className="w-5 h-5 text-primary shrink-0" />
-                                    <span>123 Adventure Way, <br />Mystery City, MC 12345</span>
+                                    <span>138 S. Rosemont RD, STE #216, <br />Virginia Beach, VA 23452</span>
                                 </li>
                                 <li className="flex gap-3">
                                     <Phone className="w-5 h-5 text-primary shrink-0" />
-                                    <span>(555) 123-4567</span>
+                                    <span>(757) 301-1862</span>
                                 </li>
                                 <li className="flex gap-3">
                                     <Mail className="w-5 h-5 text-primary shrink-0" />
-                                    <span>hello@lockandlore.com</span>
+                                    <span>lockandloreva@gmail.com</span>
                                 </li>
                             </ul>
                         </div>
 
-                        <div>
-                            <h4 className="text-lg font-bold mb-4 uppercase tracking-wider text-gray-900">Hours of Operation</h4>
-                            <ul className="space-y-2 text-gray-600 text-sm">
-                                <li className="flex justify-between border-b border-gray-200 pb-1"><span>Mon-Thu:</span> <span>10:00 AM - 10:00 PM</span></li>
-                                <li className="flex justify-between border-b border-gray-200 pb-1"><span>Fri-Sat:</span> <span>10:00 AM - 11:30 PM</span></li>
-                                <li className="flex justify-between border-b border-gray-200 pb-1"><span>Sun:</span> <span>10:00 AM - 9:00 PM</span></li>
+                        <div className="md:self-center">
+                            <h4 className="text-lg font-bold mb-4 uppercase tracking-wider text-white">Hours of Operation</h4>
+                            <ul className="space-y-2 text-gray-400 text-sm">
+                                <li className="flex justify-between border-b border-neutral-800 pb-1"><span>Monday:</span> <span>Closed</span></li>
+                                <li className="flex justify-between border-b border-neutral-800 pb-1"><span>Tuesday:</span> <span>4:00 PM - 10:00 PM</span></li>
+                                <li className="flex justify-between border-b border-neutral-800 pb-1"><span>Wednesday:</span> <span>Closed</span></li>
+                                <li className="flex justify-between border-b border-neutral-800 pb-1"><span>Thursday:</span> <span>4:00 PM - 10:00 PM</span></li>
+                                <li className="flex justify-between border-b border-neutral-800 pb-1"><span>Friday:</span> <span>4:00 PM - 11:00 PM</span></li>
+                                <li className="flex justify-between border-b border-neutral-800 pb-1"><span>Saturday:</span> <span>11:00 AM - 11:00 PM</span></li>
+                                <li className="flex justify-between border-b border-neutral-800 pb-1"><span>Sunday:</span> <span>11:00 AM - 11:00 PM</span></li>
                             </ul>
                         </div>
                     </div>
 
                     {/* Bottom Bar - Inside the main container */}
-                    <div className="pt-8 border-t border-gray-200 text-gray-500 text-xs flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="pt-8 border-t border-neutral-800 text-gray-500 text-xs flex flex-col md:flex-row justify-between items-center gap-4">
                         <span>&copy; {new Date().getFullYear()} Lock & Lore Escape Rooms. All rights reserved.</span>
                         <div className="flex gap-4">
                             <Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link>

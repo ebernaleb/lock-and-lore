@@ -14,15 +14,22 @@
 
   --color-background: #0a0a0a;
   --color-foreground: #ffffff;
-  --color-primary: #DC143C;
-  --color-primary-dark: #8B0000;
-  --color-secondary: #ff9e00;
-  --color-accent: #EF233C;
+  --color-primary: #C5973E;
+  --color-primary-dark: #9A7428;
+  --color-secondary: #DAB04D;
+  --color-accent: #DAB04D;
+}
+
+/* Override Tailwind v4 preflight which sets scroll-behavior: smooth on html.
+   Smooth scrolling interferes with Next.js App Router programmatic scroll
+   restoration on navigation — the page fails to jump to top instantly. */
+html {
+  scroll-behavior: auto;
 }
 
 body {
-  background: #f9f9f9;
-  color: #1a1a1a;
+  background: #000000;
+  color: #ececec;
   font-family: var(--font-sans);
 }
 
@@ -34,4 +41,110 @@ h5,
 h6 {
   font-family: 'Dosis', sans-serif;
   font-weight: 800;
+}
+
+/* ---------------------------------------------------------------------------
+   Gift Card Visual Effects
+   Used by GiftCardsSection.tsx for premium card animations
+   --------------------------------------------------------------------------- */
+
+/* Concept A: Embossed Velvet -- subtle shimmer sweep on hover */
+@keyframes giftcard-shimmer-a {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-15deg);
+  }
+}
+
+/* Concept B: Foil Press -- foil gradient shift on hover */
+@keyframes giftcard-foil-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Concept C: Black Chrome -- diagonal light sweep on hover */
+@keyframes giftcard-chrome-sweep {
+  0% {
+    transform: translateX(-100%) translateY(100%) rotate(-45deg);
+  }
+  100% {
+    transform: translateX(200%) translateY(-200%) rotate(-45deg);
+  }
+}
+
+/* Concept C: Black Chrome -- ambient glow pulse */
+@keyframes giftcard-glow-pulse {
+  0%, 100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* Noise texture overlay used by Concepts A and C */
+.giftcard-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* Crosshatch pattern used by Concept B */
+.giftcard-crosshatch {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(197, 151, 62, 0.015) 2px,
+      rgba(197, 151, 62, 0.015) 3px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 2px,
+      rgba(197, 151, 62, 0.015) 2px,
+      rgba(197, 151, 62, 0.015) 3px
+    );
+}
+
+/* Fade-in animation for page transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Brushed metal conic texture used by Concept C */
+.giftcard-brushed-metal {
+  background-image: conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(255,255,255,0.02) 0deg,
+    transparent 30deg,
+    rgba(255,255,255,0.015) 60deg,
+    transparent 90deg,
+    rgba(255,255,255,0.02) 120deg,
+    transparent 150deg,
+    rgba(255,255,255,0.015) 180deg,
+    transparent 210deg,
+    rgba(255,255,255,0.02) 240deg,
+    transparent 270deg,
+    rgba(255,255,255,0.015) 300deg,
+    transparent 330deg,
+    rgba(255,255,255,0.02) 360deg
+  );
 }
