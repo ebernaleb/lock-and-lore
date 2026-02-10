@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { fetchGames, fetchGameById } from '@/lib/otc-api-client';
-import { generateSlug, findGameBySlug, getGameImage } from '@/lib/game-utils';
-import BookingPage from '@/components/booking/BookingPage';
+import { findGameBySlug } from '@/lib/game-utils';
+import BookingLayout from '@/components/booking/BookingLayout';
+import OTCBookingEmbed from '@/components/booking/OTCBookingEmbed';
 import type { OTCGame } from '@/types/otc-api';
 
 interface BookPageProps {
@@ -59,7 +60,12 @@ export default async function BookPage({ params }: BookPageProps) {
     notFound();
   }
 
-  const imageUrl = getGameImage(game);
-
-  return <BookingPage game={game} imageUrl={imageUrl} slug={slug} />;
+  return (
+    <BookingLayout>
+      <div className="w-full">
+        {/* OTC Booking iframe */}
+        <OTCBookingEmbed />
+      </div>
+    </BookingLayout>
+  );
 }

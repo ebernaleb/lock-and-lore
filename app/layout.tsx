@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import localFont from "next/font/local";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { BookingProvider } from "@/lib/booking-context";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
-const dosis = localFont({
-  src: "./fonts/dosis-extrabold.ttf",
-  variable: "--font-dosis",
-  weight: "800",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -31,13 +30,11 @@ export default function RootLayout({
       <body
         className={cn(
           inter.variable,
-          dosis.variable,
+          playfair.variable,
           "antialiased text-foreground font-sans"
         )}
       >
-        <BookingProvider>
-          {children}
-        </BookingProvider>
+        {children}
       </body>
     </html>
   );

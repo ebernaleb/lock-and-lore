@@ -3,13 +3,18 @@ import {
   createBooking,
   createTransaction,
   updateBooking,
-  createWaiver,
   fetchGameWithPricingCached,
 } from '@/lib/otc-api-client';
 import { cache, availabilityCacheKey } from '@/lib/cache';
 import type { OTCErrorResponse } from '@/types/otc-api';
 
 /**
+ * @deprecated This endpoint is superseded by the OTC iframe embed (OTCBookingEmbed.tsx).
+ * The iframe at https://offthecouch.io/book/lockandlore handles the entire booking flow
+ * including availability selection, customer details, payment, and confirmation.
+ * This route is retained for reference but is no longer called by any frontend code.
+ * Safe to remove once iframe integration is confirmed stable in production.
+ *
  * POST /api/book
  *
  * Booking endpoint that confirms a customer reservation in the OTC system.
@@ -21,20 +26,48 @@ import type { OTCErrorResponse } from '@/types/otc-api';
  * BOOKING STRATEGY (with fallback chain):
  *
  *   Strategy A -- POST /transactions (preferred, OTC-canonical):
- *     Creates a transaction linking the booking slot to the customer.
- *     This is the documented customer-facing flow.
+ *     Creates a transaction linking the schedule-generated booking slot to the
+ *     customer. This is the documented customer-facing flow. When it works, OTC
+ *     automatically updates the slot status, links customer data, and creates
+ *     financial records.
  *
- *   Strategy B -- PUT /bookings + POST /waivers (fallback):
- *     When POST /transactions returns 500 (known OTC server-side issue as of
- *     2026-02-06), we fall back to:
- *       1. PUT /bookings/{id} to set group_size + status="confirmed"
- *       2. POST /waivers to register the customer in OTC
- *     This ensures the booking is visible in the OTC console as confirmed
- *     and the customer record exists in the system.
+ *     ROOT CAUSE OF 500 (diagnosed 2026-02-07):
+ *       POST /transactions crashes because NO pricing categories are configured
+ *       in the OTC Console for any game. The same bug causes
+ *       GET /games/{id}?include_pricing=true to return "Database error occurred".
+ *       FIX: Configure pricing categories in OTC Console (Games > Settings > Pricing).
+ *       Once pricing categories exist, POST /transactions should work and this
+ *       fallback to Strategy B will no longer be needed.
  *
- *   Strategy C -- POST /bookings + POST /waivers (last resort):
- *     When no booking_slot_id is provided, we create a new booking slot
- *     and then register the customer via waiver.
+ *   Strategy B -- POST /bookings (new slot with slot_text) (fallback):
+ *     When POST /transactions returns 500 (due to missing pricing categories
+ *     in OTC Console), we fall back to creating a NEW booking entry via POST /bookings.
+ *
+ *     WHY create a new booking instead of PUT to the schedule slot:
+ *       - PUT /bookings does NOT accept "status" (silently ignored)
+ *       - PUT /bookings does NOT accept "description" (silently ignored)
+ *       - PUT /bookings does NOT accept customer fields (silently ignored)
+ *       - The schedule slot stays status="available" no matter what we PUT
+ *       - POST /bookings creates a slot with status="1" (active/booked)
+ *       - The OTC Console shows status="1" bookings differently from "available"
+ *
+ *     The new booking is created at the SAME time as the schedule slot. The
+ *     availability logic detects the duplicate and marks the time as booked.
+ *     Customer info is embedded in the booking's `slot_text` field so staff
+ *     can see who booked directly in the OTC Console.
+ *
+ *     NOTE: OTC uses `slot_text` (NOT `description`) for booking display text.
+ *     The `description` field documented in the API docs is silently ignored
+ *     on both POST and PUT (confirmed via testing 2026-02-06).
+ *
+ *     WAIVER NOTE: We intentionally do NOT call POST /waivers here. The
+ *     POST /waivers endpoint creates a COMPLETED/SIGNED waiver record, which
+ *     makes OTC Console show "Waiver signed" even though the customer never
+ *     actually signed anything. Any "Waiver signed" entries visible in the
+ *     OTC Console are from earlier testing and should be deleted manually.
+ *     Waivers should be handled through OTC's built-in waiver email
+ *     automation (triggered when POST /transactions works) or managed
+ *     manually by staff through the OTC Console.
  *
  * Request Body:
  *   game_id             (number, required) - Game to book
@@ -46,7 +79,7 @@ import type { OTCErrorResponse } from '@/types/otc-api';
  *   customer_first_name (string, required) - Customer first name
  *   customer_last_name  (string, required) - Customer last name
  *   customer_phone      (string, optional) - Customer phone number
- *   booking_slot_id     (number, optional) - Existing OTC booking slot ID
+ *   booking_slot_id     (number, optional) - Existing OTC schedule slot ID
  *
  * Response:
  *   201 on success with booking details and confirmation number
@@ -202,38 +235,8 @@ export async function POST(request: Request) {
       t.length === 5 ? `${t}:00` : t;
 
     // -----------------------------------------------------------------------
-    // 3. Determine/create booking slot
+    // 3. Build customer data (shared by all strategies)
     // -----------------------------------------------------------------------
-    let slotId: number;
-
-    if (bookingSlotId) {
-      slotId = bookingSlotId;
-      console.log(
-        `[/api/book] Using existing OTC booking slot #${slotId} for game ${gameId} on ${bookingDate}`
-      );
-    } else {
-      // No slot ID provided -- create a new booking slot
-      console.warn(
-        `[/api/book] No booking_slot_id -- creating new slot via POST /bookings`
-      );
-      const newBooking = await createBooking({
-        game_id: gameId,
-        company_group_id: companyGroupId,
-        booking_date: bookingDate,
-        start_time: normalizeTime(startTime),
-        end_time: normalizeTime(endTime),
-        group_size: groupSize,
-      });
-      slotId = newBooking.id;
-      console.log(`[/api/book] Created new booking slot #${slotId}`);
-    }
-
-    // -----------------------------------------------------------------------
-    // 4. Attempt booking via transaction (Strategy A)
-    //    If it fails, fall back to PUT /bookings + POST /waivers (Strategy B)
-    // -----------------------------------------------------------------------
-
-    // Build customer data for both strategies
     const customerData: {
       email: string;
       first_name: string;
@@ -251,79 +254,188 @@ export async function POST(request: Request) {
     let transaction = null;
     let transactionError: string | null = null;
     let usedFallback = false;
+    let slotId: number;
 
-    // --- Strategy A: POST /transactions ---
-    try {
-      const transactionParams = {
-        company_group_id: companyGroupId,
-        customer: customerData,
-        bookings: [slotId],
-      };
-
+    // -----------------------------------------------------------------------
+    // 4. Strategy A: POST /transactions (preferred, OTC-canonical)
+    //
+    //    Uses the schedule-generated booking slot ID. When this works, OTC
+    //    automatically links customer data, changes the slot status, and
+    //    creates financial records.
+    // -----------------------------------------------------------------------
+    if (bookingSlotId) {
+      slotId = bookingSlotId;
       console.log(
-        `[/api/book] Strategy A: Creating transaction for slot #${slotId}...`
+        `[/api/book] Using schedule slot #${slotId} for game ${gameId} on ${bookingDate}`
       );
 
-      transaction = await createTransaction(transactionParams);
+      try {
+        const transactionParams = {
+          company_group_id: companyGroupId,
+          customer: customerData,
+          bookings: [slotId],
+        };
 
+        console.log(
+          `[/api/book] Strategy A: Creating transaction for slot #${slotId}...`
+        );
+
+        transaction = await createTransaction(transactionParams);
+
+        console.log(
+          `[/api/book] Transaction created successfully: ` +
+            `id=${transaction.id}, order_number=${transaction.order_number}`
+        );
+      } catch (txError) {
+        transactionError =
+          txError instanceof Error ? txError.message : 'Unknown transaction error';
+        console.warn(
+          `[/api/book] Strategy A failed (POST /transactions): ${transactionError}`
+        );
+      }
+    } else {
+      slotId = 0; // Will be set by Strategy B
       console.log(
-        `[/api/book] Transaction created successfully: ` +
-          `id=${transaction.id}, order_number=${transaction.order_number}`
-      );
-    } catch (txError) {
-      transactionError =
-        txError instanceof Error ? txError.message : 'Unknown transaction error';
-      console.warn(
-        `[/api/book] Strategy A failed (POST /transactions): ${transactionError}`
-      );
-      console.log(
-        `[/api/book] Falling back to Strategy B (PUT /bookings + POST /waivers)...`
+        `[/api/book] No booking_slot_id provided, skipping Strategy A.`
       );
     }
 
-    // --- Strategy B: PUT /bookings + POST /waivers ---
+    // -----------------------------------------------------------------------
+    // 5. Strategy B: POST /bookings (new slot with slot_text) (fallback)
+    //
+    //    When POST /transactions fails (known OTC 500 bug) or no slot ID is
+    //    available, create a BRAND NEW booking entry via POST /bookings.
+    //
+    //    KEY INSIGHT: POST /bookings creates a slot with status="1" (active),
+    //    while schedule-generated slots have status="available". The OTC Console
+    //    displays status="1" bookings as occupied/booked entries, not as open
+    //    slots. This is the critical difference from the old approach of using
+    //    PUT to modify the schedule slot (which could never change the status).
+    //
+    //    Customer info is embedded in the booking `slot_text` field so
+    //    staff can identify who booked when viewing it in the OTC Console.
+    //    NOTE: OTC uses `slot_text` (NOT `description`) for this purpose.
+    //    The `description` field is silently ignored on POST/PUT.
+    //
+    //    WAIVER: We do NOT call POST /waivers here. That endpoint creates a
+    //    COMPLETED waiver record (as if the customer already signed), which
+    //    causes OTC Console to show "Waiver signed" prematurely. Waivers
+    //    should be sent to the customer via OTC's automated email system
+    //    (which triggers when POST /transactions works) or managed manually
+    //    by staff through the OTC Console's waiver-send feature.
+    // -----------------------------------------------------------------------
     if (!transaction) {
       usedFallback = true;
+      console.log(
+        `[/api/book] Falling back to Strategy B (POST /bookings with slot_text)...`
+      );
 
       try {
-        // Step B1: Update the booking slot to "confirmed" with group size
-        console.log(
-          `[/api/book] Strategy B Step 1: Confirming booking slot #${slotId}...`
-        );
-        const updatedBooking = await updateBooking(slotId, {
+        // Build slot_text that embeds customer contact info so staff
+        // can see who booked directly in the OTC Console schedule view.
+        //
+        // IMPORTANT: The OTC API uses `slot_text` for booking display text,
+        // NOT `description`. The `description` field is silently ignored on
+        // POST /bookings (confirmed via testing 2026-02-06).
+        //
+        // Format: "Name | email | phone | group_size players"
+        const slotTextParts = [
+          `${customerFirstName} ${customerLastName}`,
+          customerEmail,
+        ];
+        if (customerPhone) {
+          slotTextParts.push(customerPhone);
+        }
+        slotTextParts.push(`${groupSize} players`);
+        const slotText = slotTextParts.join(' | ');
+
+        // Build the exact payload for logging transparency
+        const bookingPayload = {
+          game_id: gameId,
+          company_group_id: companyGroupId,
+          booking_date: bookingDate,
+          start_time: normalizeTime(startTime),
+          end_time: normalizeTime(endTime),
           group_size: groupSize,
-          status: 'confirmed',
-        });
+          slot_text: slotText,
+        };
+
+        // Create a NEW booking entry at the same time slot.
+        // POST /bookings returns status="1" (active) -- unlike schedule slots
+        // which have status="available". This makes the booking appear as
+        // occupied in the OTC Console schedule view.
         console.log(
-          `[/api/book] Booking slot #${slotId} updated: status=${updatedBooking.status}, group_size=${updatedBooking.group_size}`
+          `[/api/book] Strategy B: POST /bookings payload:`,
+          JSON.stringify(bookingPayload)
         );
 
-        // Step B2: Create a waiver to register the customer in OTC
+        const newBooking = await createBooking(bookingPayload);
+
+        slotId = newBooking.id;
+
         console.log(
-          `[/api/book] Strategy B Step 2: Creating waiver for customer ${customerEmail}...`
+          `[/api/book] POST /bookings response:`,
+          JSON.stringify({
+            id: newBooking.id,
+            status: newBooking.status,
+            group_size: newBooking.group_size,
+            slot_text: newBooking.slot_text,
+            game_id: newBooking.game_id,
+            booking_date: newBooking.booking_date,
+            start_time: newBooking.start_time,
+            end_time: newBooking.end_time,
+            customer_id: newBooking.customer_id,
+            transaction_id: newBooking.transaction_id,
+          })
         );
-        const waiver = await createWaiver({
-          game_id: gameId,
-          booking_slot_id: slotId,
-          customer: {
-            email: customerEmail,
-            first_name: customerFirstName,
-            last_name: customerLastName,
-            phone: customerPhone,
-          },
-        });
-        console.log(
-          `[/api/book] Waiver created: id=${waiver.id}, user_id=${waiver.user_id}, ` +
-            `customer_email=${waiver.customer_email}`
-        );
+
+        // VERIFICATION: If slot_text was not stored by POST /bookings,
+        // retry via PUT /bookings to ensure customer info is visible
+        // in the OTC Console. This guards against OTC API inconsistencies.
+        if (!newBooking.slot_text && slotText) {
+          console.warn(
+            `[/api/book] WARNING: POST /bookings did NOT store slot_text. ` +
+              `Retrying via PUT /bookings/${slotId}...`
+          );
+          try {
+            const updated = await updateBooking(slotId, {
+              slot_text: slotText,
+            });
+            console.log(
+              `[/api/book] PUT /bookings/${slotId} result: ` +
+                `slot_text="${updated.slot_text ?? '(still empty)'}"`
+            );
+          } catch (putError) {
+            // Non-fatal: the booking was created, just without display text
+            console.warn(
+              `[/api/book] PUT /bookings/${slotId} failed (non-fatal):`,
+              putError instanceof Error ? putError.message : putError
+            );
+          }
+        }
+
+        // NOTE: We intentionally do NOT create a waiver here.
+        //
+        // POST /waivers creates a COMPLETED waiver record, which makes
+        // OTC Console show "Waiver signed, no booking" -- even though the
+        // customer never actually signed a waiver. This is misleading and
+        // prevents the proper waiver flow where:
+        //   1. Customer receives automated waiver email after booking
+        //   2. Customer clicks link and signs waiver digitally
+        //   3. Only THEN does the waiver show as "signed" in OTC Console
+        //
+        // The customer's contact info is instead embedded in the booking's
+        // `slot_text` field, which is visible in the OTC Console schedule.
+        //
+        // When POST /transactions is fixed on OTC's end, Strategy A will
+        // handle the full flow including automated waiver emails.
       } catch (fallbackError) {
-        // If even the fallback fails, that is a real error
         const fallbackMessage =
           fallbackError instanceof Error
             ? fallbackError.message
             : 'Unknown fallback error';
         console.error(
-          `[/api/book] Strategy B also failed: ${fallbackMessage}`
+          `[/api/book] Strategy B failed: ${fallbackMessage}`
         );
         return NextResponse.json(
           {
@@ -338,12 +450,12 @@ export async function POST(request: Request) {
     }
 
     // -----------------------------------------------------------------------
-    // 5. Invalidate availability cache
+    // 6. Invalidate availability cache
     // -----------------------------------------------------------------------
     cache.invalidate(availabilityCacheKey(gameId, bookingDate));
 
     // -----------------------------------------------------------------------
-    // 6. Build and return response
+    // 7. Build and return response
     // -----------------------------------------------------------------------
 
     // Generate a confirmation number:
@@ -374,7 +486,6 @@ export async function POST(request: Request) {
         : null,
       confirmation_number: confirmationNumber,
       message: 'Booking confirmed successfully!',
-      // Include note about fallback for transparency/debugging
       ...(usedFallback && {
         note: 'Booking confirmed via direct slot reservation. Payment will be collected at arrival.',
       }),
@@ -382,7 +493,7 @@ export async function POST(request: Request) {
 
     console.log(
       `[/api/book] SUCCESS - confirmation: ${confirmationNumber}, ` +
-        `slot: #${slotId}, strategy: ${usedFallback ? 'B (fallback)' : 'A (transaction)'}`
+        `slot: #${slotId}, strategy: ${usedFallback ? 'B (POST new booking with slot_text)' : 'A (transaction)'}`
     );
 
     return NextResponse.json(responseBody, { status: 201 });

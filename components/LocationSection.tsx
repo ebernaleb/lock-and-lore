@@ -5,6 +5,7 @@ import {
   Navigation,
   ArrowRight,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // ---------------------------------------------------------------------------
 // Data
@@ -38,13 +39,41 @@ const contactDetails = [
 export function LocationSection() {
   return (
     <section
-      className="py-20 sm:py-24 bg-black relative overflow-hidden"
+      className="py-24 sm:py-32 md:py-36 bg-black relative overflow-hidden"
       id="location"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-          {/* Left: Content */}
-          <div className="order-2 lg:order-1">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
+          {/* Left: Map Visual */}
+          <div className="order-1 lg:order-1">
+            <div className="relative w-full">
+              {/* Subtle accent glow behind the map */}
+              <div
+                className="absolute -inset-4 rounded-3xl opacity-20 blur-3xl pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at center, var(--color-primary) 0%, transparent 70%)",
+                }}
+                aria-hidden="true"
+              />
+
+              {/* Map embed */}
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-neutral-800 aspect-[4/3]">
+                <iframe
+                  title="Lock and Lore Location"
+                  src="https://maps.google.com/maps?q=138+S+Rosemont+Rd+STE+216+Virginia+Beach+VA+23452&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full absolute inset-0"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Content */}
+          <div className="order-2 lg:order-2">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
               Find <span className="text-primary">Us</span>
             </h2>
@@ -83,39 +112,16 @@ export function LocationSection() {
             </div>
 
             {/* CTA */}
-            <Link
-              href="https://www.google.com/maps/search/?api=1&query=138+S+Rosemont+Rd+STE+216+Virginia+Beach+VA+23452"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-neutral-950 font-medium px-6 py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none uppercase tracking-wide"
-            >
-              <span className="relative z-10">Get Directions</span>
-              <ArrowRight className="w-4 h-4 relative z-10" />
-            </Link>
-          </div>
-
-          {/* Right: Map Visual */}
-          <div className="order-1 lg:order-2 lg:mt-16">
-            <div className="relative w-full">
-              {/* Decorative glow behind the map */}
-              <div
-                className="absolute inset-0 bg-primary/5 rounded-3xl blur-2xl scale-105 pointer-events-none"
-                aria-hidden="true"
-              />
-
-              {/* Map embed */}
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-neutral-800/50 aspect-[4/3]">
-                <iframe
-                  title="Lock and Lore Location"
-                  src="https://maps.google.com/maps?q=138+S+Rosemont+Rd+STE+216+Virginia+Beach+VA+23452&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                  className="w-full h-full absolute inset-0"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
-            </div>
+            <Button asChild size="lg" className="rounded-full uppercase tracking-wide gap-2">
+              <Link
+                href="https://www.google.com/maps/search/?api=1&query=138+S+Rosemont+Rd+STE+216+Virginia+Beach+VA+23452"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get Directions
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

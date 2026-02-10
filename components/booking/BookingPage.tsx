@@ -1,5 +1,12 @@
 'use client';
 
+/**
+ * @deprecated This component is superseded by the OTC iframe embed.
+ * See: components/booking/OTCBookingEmbed.tsx and app/rooms/[slug]/book/page.tsx
+ * This 3-step booking flow (Schedule → Details → Review) is no longer used.
+ * Safe to remove once iframe integration is confirmed stable in production.
+ */
+
 import { useEffect } from 'react';
 import { useBooking } from '@/lib/booking-context';
 import BookingLayout from './BookingLayout';

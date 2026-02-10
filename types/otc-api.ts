@@ -182,7 +182,14 @@ export interface OTCBooking {
   total?: number;
   created_at?: string | null;
   is_public_booking?: number;
+  /** @deprecated OTC ignores this field on POST/PUT. Use `slot_text` instead. */
   description?: string;
+  /**
+   * Text displayed on the booking slot in OTC Console schedule view.
+   * This is the ACTUAL writable text field (not `description`).
+   * Writable via both POST and PUT /bookings.
+   */
+  slot_text?: string;
 
   // Flat game fields (actual OTC API shape)
   game_id?: number;
@@ -224,22 +231,41 @@ export interface OTCCreateBookingParams {
   end_time: string;
   group_size?: number;
   custom_price?: number;
-  description?: string;
+  /**
+   * Text displayed on the booking slot in OTC Console schedule view.
+   *
+   * IMPORTANT: The OTC API uses `slot_text` (NOT `description`) for this field.
+   * The `description` field documented in the API docs is silently ignored on
+   * both POST and PUT. This was confirmed via testing on 2026-02-06.
+   *
+   * We use this to embed customer contact info so staff can see who booked
+   * directly in the OTC Console.
+   */
+  slot_text?: string;
 }
 
-/** Parameters for updating a booking via PUT /bookings/{id} */
+/**
+ * Parameters for updating a booking via PUT /bookings/{id}.
+ *
+ * IMPORTANT: Only these fields are accepted. The following are SILENTLY IGNORED:
+ *   - status (cannot be changed via PUT)
+ *   - description (silently ignored -- use `slot_text` instead)
+ *   - customer fields (customer_email, customer_first_name, etc.)
+ *
+ * To create a "booked" slot, use POST /bookings (returns status="1") instead.
+ */
 export interface OTCUpdateBookingParams {
   booking_date?: string;
   start_time?: string;
   end_time?: string;
   group_size?: number;
-  status?: string;
+  /** Text displayed on the booking slot in OTC Console. Writable via PUT (confirmed 2026-02-06). */
+  slot_text?: string;
   price?: number;
   tax?: number;
   fee?: number;
   discount?: number;
   recalculate_pricing?: boolean;
-  description?: string;
   tickets_to_add?: Array<{ pricing_category_id: number; quantity: number }>;
   ticket_ids_to_remove?: number[];
 }

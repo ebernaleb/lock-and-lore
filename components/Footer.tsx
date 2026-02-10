@@ -3,6 +3,7 @@
 import { MapPin, Phone, Mail, Facebook, Instagram, Twitter } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export function GiftCardSection() {
     return (
@@ -24,9 +25,9 @@ export function GiftCardSection() {
                         Give the gift of adventure! Perfect for birthdays, holidays, or just because.
                         Available in any amount.
                     </p>
-                    <button className="bg-primary hover:bg-primary-dark text-neutral-950 font-medium px-6 py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none uppercase tracking-wide mt-4">
-                        <span className="relative z-10">Buy Now</span>
-                    </button>
+                    <Button size="lg" className="rounded-full uppercase tracking-wide mt-4">
+                        Buy Now
+                    </Button>
                 </div>
                 <div className="flex-1 w-full relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
                     {/* Gift Card Visual - simple CSS design */}
@@ -43,7 +44,7 @@ export function GiftCardSection() {
 
 export function Footer() {
     return (
-        <footer className="bg-black pt-8 pb-8 mt-16 relative">
+        <footer className="bg-black pt-12 pb-8 mt-20 sm:mt-24 relative">
             <div className="w-full px-4 sm:px-6 lg:px-8">
                 {/* Main Footer Container */}
                 <div className="bg-neutral-900 rounded-[2rem] px-12 md:px-16 pt-4 md:pt-6 pb-12 md:pb-16">
@@ -112,8 +113,9 @@ export function Footer() {
                     <div className="pt-8 border-t border-neutral-800 text-gray-500 text-xs flex flex-col md:flex-row justify-between items-center gap-4">
                         <span>&copy; {new Date().getFullYear()} Lock & Lore Escape Rooms. All rights reserved.</span>
                         <div className="flex gap-4">
-                            <Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link>
-                            <Link href="#" className="hover:text-primary transition-colors">Terms of Service</Link>
+                            <Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+                            <Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+                            <Link href="/cancellation-policy" className="hover:text-primary transition-colors">Cancellation Policy</Link>
                         </div>
                     </div>
                 </div>

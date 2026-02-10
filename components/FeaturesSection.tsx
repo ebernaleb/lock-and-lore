@@ -51,13 +51,7 @@ const steps = [
 
 export function FeaturesSection() {
     return (
-        <section className="py-20 sm:py-24 bg-black relative overflow-hidden">
-            {/* Decorative background elements */}
-            <div
-                className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-950/30 via-black to-black opacity-50 pointer-events-none"
-                aria-hidden="true"
-            />
-
+        <section className="py-24 sm:py-32 md:py-36 bg-black relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 {/* Section header */}
                 <div className="text-center mb-12 sm:mb-16">

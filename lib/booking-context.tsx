@@ -1,5 +1,13 @@
 'use client';
 
+/**
+ * @deprecated This booking context is superseded by the OTC iframe embed (OTCBookingEmbed.tsx).
+ * The iframe manages its own booking state internally. This React Context was used by
+ * the old 3-step booking flow (BookingPage, ScheduleStep, DetailsStep, ReviewStep).
+ * The BookingProvider has been removed from layout.tsx.
+ * Safe to remove once iframe integration is confirmed stable in production.
+ */
+
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
 interface TimeSlot {

@@ -15,9 +15,7 @@ export default function Home() {
       <Hero />
 
       {/* Primary conversion: Room selection */}
-      <div id="rooms">
-        <RoomsSection />
-      </div>
+      <RoomsSection />
 
       {/* How It Works - step-by-step booking journey */}
       <div id="how-it-works">

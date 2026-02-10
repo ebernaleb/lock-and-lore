@@ -1,3 +1,9 @@
+/**
+ * @deprecated This validation module was used by the old 3-step booking flow (DetailsStep.tsx).
+ * The OTC iframe embed handles its own form validation internally.
+ * Safe to remove once iframe integration is confirmed stable in production.
+ */
+
 export interface ValidationResult {
   isValid: boolean;
   error?: string;

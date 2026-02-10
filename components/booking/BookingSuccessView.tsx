@@ -1,5 +1,11 @@
 'use client';
 
+/**
+ * @deprecated Success screen from the old 3-step booking flow.
+ * The OTC iframe handles confirmation display internally.
+ * Safe to remove once iframe integration is confirmed stable in production.
+ */
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { CheckCircle2, Mail, Copy, Check, ArrowLeft } from 'lucide-react';

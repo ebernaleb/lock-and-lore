@@ -1,5 +1,11 @@
 'use client';
 
+/**
+ * @deprecated Room summary card from the old 3-step booking flow.
+ * The OTC iframe displays room details within its own UI.
+ * Safe to remove once iframe integration is confirmed stable in production.
+ */
+
 import { Users, Clock, Lock, Receipt, Calendar, Timer } from 'lucide-react';
 import { useBooking } from '@/lib/booking-context';
 import { getDifficultyLabel } from '@/lib/game-utils';

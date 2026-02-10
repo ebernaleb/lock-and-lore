@@ -6,6 +6,11 @@ import {
 import type { AvailabilityResponse, OTCErrorResponse } from '@/types/otc-api';
 
 /**
+ * @deprecated This endpoint is superseded by the OTC iframe embed (OTCBookingEmbed.tsx).
+ * The iframe fetches availability directly from OTC's hosted booking page.
+ * This route is retained for reference but is no longer called by any frontend code.
+ * Safe to remove once iframe integration is confirmed stable in production.
+ *
  * GET /api/availability/[gameId]
  *
  * Returns real-time timeslot availability for a specific game on a given date.

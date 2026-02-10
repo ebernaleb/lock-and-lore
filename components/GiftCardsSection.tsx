@@ -2,6 +2,7 @@
 
 import { Mail, CreditCard, Clock, ArrowRight, Lock } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 // ---------------------------------------------------------------------------
 // Data
@@ -40,27 +41,6 @@ function GiftCardVisual() {
   return (
     <div className="order-1 lg:order-2 flex justify-center">
       <div className="relative w-full max-w-md group/card">
-        {/* Ambient pulsing glow */}
-        <div
-          className="absolute inset-0 rounded-3xl blur-[60px] scale-115 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 50%, rgba(122,92,32,0.35) 0%, rgba(122,92,32,0.08) 50%, transparent 70%)",
-            animation: "giftcard-glow-pulse 4s ease-in-out infinite",
-          }}
-          aria-hidden="true"
-        />
-
-        {/* Tighter inner glow layer */}
-        <div
-          className="absolute inset-4 rounded-3xl blur-xl pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 50%, rgba(197,151,62,0.1) 0%, transparent 60%)",
-          }}
-          aria-hidden="true"
-        />
-
         {/* Stacked card behind -- dark with gold edge glow */}
         <div
           className="absolute top-4 left-4 right-4 bottom-0 bg-neutral-950 rounded-2xl rotate-2 pointer-events-none border border-amber-900/15"
@@ -247,7 +227,7 @@ function GiftCardVisual() {
 
 export function GiftCardsSection() {
   return (
-    <section className="py-20 sm:py-24 bg-black relative overflow-hidden" id="gift-cards">
+    <section className="py-24 sm:py-32 md:py-36 bg-black relative overflow-hidden" id="gift-cards">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left: Content (unchanged) */}
@@ -281,13 +261,12 @@ export function GiftCardsSection() {
             </div>
 
             {/* CTA */}
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-neutral-950 font-medium px-6 py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none uppercase tracking-wide"
-            >
-              <span className="relative z-10">Buy a Gift Card</span>
-              <ArrowRight className="w-4 h-4 relative z-10" />
-            </Link>
+            <Button asChild size="lg" className="rounded-full uppercase tracking-wide gap-2">
+              <Link href="#">
+                Buy a Gift Card
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
           </div>
 
           {/* Right: Gift Card Visual */}

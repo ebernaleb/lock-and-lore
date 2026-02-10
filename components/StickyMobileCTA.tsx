@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Ticket } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 /**
  * A sticky booking CTA that appears on mobile devices after the user scrolls
@@ -58,13 +59,12 @@ export function StickyMobileCTA() {
         aria-hidden="true"
       />
       <div className="bg-black px-4 py-3 shadow-[0_-4px_12px_rgba(0,0,0,0.3)]">
-        <Link
-          href="/rooms"
-          className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary-dark text-neutral-950 font-medium py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none uppercase tracking-wide"
-        >
-          <Ticket className="w-5 h-5 relative z-10" />
-          <span className="relative z-10">Check Availability</span>
-        </Link>
+        <Button asChild size="lg" className="w-full rounded-full uppercase tracking-wide gap-2">
+          <Link href="/book">
+            <Ticket className="w-5 h-5" />
+            Check Availability
+          </Link>
+        </Button>
       </div>
     </div>
   );

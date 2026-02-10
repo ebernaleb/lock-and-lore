@@ -3,6 +3,11 @@ import { fetchGameActivity } from '@/lib/otc-api-client';
 import type { ActivityResponse, OTCErrorResponse } from '@/types/otc-api';
 
 /**
+ * @deprecated This endpoint is superseded by the OTC iframe embed (OTCBookingEmbed.tsx).
+ * Social proof / viewer count data was consumed by the old booking flow UI.
+ * This route is retained for reference but is no longer called by any frontend code.
+ * Safe to remove once iframe integration is confirmed stable in production.
+ *
  * GET /api/activity/[gameId]
  *
  * Returns recent booking activity and simulated social proof data

@@ -1,23 +1,41 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: 'Dosis';
-  src: url('./fonts/dosis-extrabold.ttf') format('truetype');
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-
 @theme {
   --font-sans: var(--font-inter);
-  --font-heading: 'Dosis', sans-serif;
+  --font-heading: var(--font-playfair);
+  --font-playfair: var(--font-playfair);
 
+  /* Core palette */
   --color-background: #0a0a0a;
   --color-foreground: #ffffff;
-  --color-primary: #C5973E;
-  --color-primary-dark: #9A7428;
-  --color-secondary: #DAB04D;
-  --color-accent: #DAB04D;
+  --color-primary: #FBBD08;
+  --color-primary-dark: #D39E07;
+  --color-primary-foreground: #0a0a0a;
+  --color-secondary: #FBBD08;
+  --color-secondary-foreground: #0a0a0a;
+  --color-accent: #FBBD08;
+  --color-accent-foreground: #0a0a0a;
+
+  /* Destructive */
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+
+  /* Muted */
+  --color-muted: #262626;
+  --color-muted-foreground: #a3a3a3;
+
+  /* Popover */
+  --color-popover: #171717;
+  --color-popover-foreground: #ffffff;
+
+  /* Card */
+  --color-card: #171717;
+  --color-card-foreground: #ffffff;
+
+  /* Border / Input / Ring */
+  --color-border: #262626;
+  --color-input: #262626;
+  --color-ring: #FBBD08;
 }
 
 /* Override Tailwind v4 preflight which sets scroll-behavior: smooth on html.
@@ -39,8 +57,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Dosis', sans-serif;
-  font-weight: 800;
+  font-family: var(--font-playfair);
+  font-weight: 700;
 }
 
 /* ---------------------------------------------------------------------------
@@ -129,6 +147,30 @@ h6 {
   animation: fadeIn 0.6s ease-out forwards;
 }
 
+/* Hero section staggered entrance animation */
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hero scroll indicator bounce */
+@keyframes heroScrollBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
+}
+
 /* Brushed metal conic texture used by Concept C */
 .giftcard-brushed-metal {
   background-image: conic-gradient(
@@ -147,4 +189,96 @@ h6 {
     transparent 330deg,
     rgba(255,255,255,0.02) 360deg
   );
+}
+
+/* ---------------------------------------------------------------------------
+   Section Title Animations
+   Used by SectionTitle.tsx component variants
+   --------------------------------------------------------------------------- */
+
+/* Cinematic variant - side bars slide in */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Underline variant - width expands from center */
+@keyframes expandWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Mobile Sidebar Animations
+   Used by MobileSidebar.tsx for drawer navigation
+   --------------------------------------------------------------------------- */
+
+/* Staggered entrance for nav items - slide up and fade in */
+@keyframes sidebarNavEnter {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Exit animation for nav items */
+@keyframes sidebarNavExit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+
+/* CTA button shimmer sweep */
+@keyframes sidebar-cta-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Nav items base state: hidden until animation fires */
+.sidebar-nav-item {
+  opacity: 0;
+}
+
+/* Enter animation class */
+.sidebar-nav-item-enter {
+  animation: sidebarNavEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Exit animation class */
+.sidebar-nav-item-exit {
+  animation: sidebarNavExit 0.2s ease-in forwards;
 }

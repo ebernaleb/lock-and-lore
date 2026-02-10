@@ -2,8 +2,7 @@
 
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { LocationSection } from "@/components/LocationSection";
-import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
+import { Phone, Mail, Clock, Send } from "lucide-react";
 import { useState } from "react";
 
 export default function ContactPage() {
@@ -79,28 +78,6 @@ export default function ContactPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
                         {/* Contact Information Cards */}
                         <div className="lg:col-span-1 space-y-4">
-                            {/* Location Card */}
-                            <div className="bg-neutral-900 rounded-2xl p-5 sm:p-6 hover:bg-neutral-800 transition-colors duration-300">
-                                <div className="bg-primary/10 w-11 h-11 flex items-center justify-center rounded-xl mb-4">
-                                    <MapPin className="w-5 h-5 text-primary" />
-                                </div>
-                                <h3 className="text-lg font-bold font-heading text-white mb-2 tracking-wide">
-                                    Visit Us
-                                </h3>
-                                <p className="text-gray-400 text-sm leading-relaxed">
-                                    138 S. Rosemont RD, STE #216<br />
-                                    Virginia Beach, VA 23452
-                                </p>
-                                <a
-                                    href="https://maps.google.com"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-block mt-3 text-primary hover:text-primary-dark font-bold text-sm tracking-wide transition-colors duration-200"
-                                >
-                                    Get Directions &rarr;
-                                </a>
-                            </div>
-
                             {/* Phone Card */}
                             <div className="bg-neutral-900 rounded-2xl p-5 sm:p-6 hover:bg-neutral-800 transition-colors duration-300">
                                 <div className="bg-primary/10 w-11 h-11 flex items-center justify-center rounded-xl mb-4">
@@ -319,9 +296,6 @@ export default function ContactPage() {
                     </div>
                 </div>
             </section>
-
-            {/* Location Section with Map */}
-            <LocationSection />
 
             <Footer />
         </main>

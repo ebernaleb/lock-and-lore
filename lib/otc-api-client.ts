@@ -294,13 +294,22 @@ export async function createBooking(
 /**
  * Update an existing booking slot via PUT /bookings/{id}.
  *
- * This can update group_size, status, pricing, date/time, tickets, etc.
- * Used as the primary booking mechanism when POST /transactions is unavailable.
+ * IMPORTANT: PUT /bookings has LIMITED writable fields. The following fields
+ * are SILENTLY IGNORED by the OTC API (confirmed via testing 2026-02-06):
+ *   - status (cannot change "available" to "confirmed")
+ *   - description (silently ignored -- use `slot_text` instead)
+ *   - customer_email, customer_first_name, etc. (customer fields)
  *
- * Known writable fields:
- *   - group_size, status, booking_date, start_time, end_time
+ * Known writable fields (per OTC API docs + testing):
+ *   - booking_date, start_time, end_time
+ *   - group_size
+ *   - slot_text (booking display text -- confirmed writable via PUT 2026-02-06)
  *   - price, tax, fee, discount, recalculate_pricing
- *   - tickets_to_add, ticket_ids_to_remove, description
+ *   - tickets_to_add, ticket_ids_to_remove
+ *
+ * NOTE: This function is kept for utility purposes but is NOT used in the
+ * booking strategy. Strategy B uses POST /bookings (which creates a new entry
+ * with status="1") instead of PUT (which cannot change status from "available").
  */
 export async function updateBooking(
   bookingId: number,
@@ -328,12 +337,25 @@ export async function updateBooking(
 /**
  * Create a waiver in the OTC system.
  *
- * This serves a dual purpose:
- *   1. Creates a waiver record for the booking
- *   2. Creates or links a customer record in OTC (returns user_id)
+ * WARNING: POST /waivers creates a COMPLETED/SIGNED waiver record.
+ * The very act of calling this endpoint marks the waiver as signed in
+ * the OTC Console, even if no `signature` (base64) is provided.
+ * There is no API parameter to create an "unsigned" or "pending" waiver,
+ * nor to trigger an automated waiver email to the customer.
  *
- * When POST /transactions is unavailable, this is the only way to
- * register a customer in the OTC system via the API.
+ * DO NOT call this during the booking flow. It causes:
+ *   - OTC Console to show "Waiver signed, no booking"
+ *   - Customer never actually signed anything
+ *   - Misleading records in the waiver management system
+ *
+ * Waiver emails to customers are handled by OTC's internal automation
+ * when bookings are created through POST /transactions (Strategy A).
+ * For Strategy B (direct POST /bookings), waivers should be managed
+ * manually by staff through the OTC Console.
+ *
+ * This function is kept for cases where a signed waiver record truly
+ * needs to be created programmatically (e.g., kiosk mode, in-person
+ * waiver signing with digital signature capture).
  */
 export async function createWaiver(
   params: OTCCreateWaiverParams
@@ -535,24 +557,59 @@ export async function fetchAvailability(
   for (const startTime of sortedTimes) {
     const bookingsForSlot = slotsByTime.get(startTime)!;
 
-    // Check if any booking for this time is "available"
+    // Check if any booking for this time is a schedule-generated "available" slot.
+    // These have: status="available", group_size=0, created_at=null, customer=null
     const availableBooking = bookingsForSlot.find(
       (b) => b.status?.toLowerCase().trim() === 'available'
     );
 
-    // Check if any booking for this time is a real customer reservation
-    // This includes: status that is NOT "available"/"expired", OR has a transaction_id linked
+    // Check if any booking for this time is a real customer reservation.
+    //
+    // A slot is considered "booked" if ANY of these conditions are true:
+    //
+    //   1. Has a transaction_id linked (booked via POST /transactions -- Strategy A)
+    //   2. Has a customer_id linked (transaction created a customer record)
+    //   3. Status is a customer-facing status like "confirmed", "pending",
+    //      "checked_in", "in_progress", "completed", "cancelled", etc.
+    //   4. Status is "1" -- POST /bookings creates entries with status="1"
+    //      (active/booked). This is how Strategy B works: it creates a NEW
+    //      booking entry at the same time, which gets status="1" and the
+    //      specified group_size. The OTC Console shows these as occupied slots.
+    //   5. Has group_size > 0 on an "available" slot -- legacy Strategy B
+    //      detection (PUT /bookings could set group_size but not status).
+    //      Schedule-generated "available" slots always have group_size=0.
     const bookedEntry = bookingsForSlot.find((b) => {
       const status = b.status?.toLowerCase().trim();
       const hasTransaction = b.transaction_id !== null && b.transaction_id !== undefined;
       const hasCustomer = b.customer_id !== null && b.customer_id !== undefined;
 
-      // A slot is booked if it has a non-available/expired status, OR is linked to a transaction/customer
-      return (status !== 'available' && status !== 'expired') || hasTransaction || hasCustomer;
+      // Strategy A: linked to transaction or customer
+      if (hasTransaction || hasCustomer) {
+        return true;
+      }
+
+      // Strategy B (new approach): POST /bookings creates status="1"
+      // This is NOT a schedule-generated slot -- it is an API-created booking
+      if (status === '1') {
+        return true;
+      }
+
+      // Standard OTC statuses that indicate a confirmed/active booking
+      if (status !== 'available' && status !== 'expired') {
+        return true;
+      }
+
+      // Legacy detection: "available" slot with group_size > 0
+      // (from old Strategy B that used PUT /bookings to set group_size)
+      if (status === 'available' && b.group_size > 0) {
+        return true;
+      }
+
+      return false;
     });
 
-    // The slot is available only if there is an "available" entry and
-    // no active customer booking for the same time
+    // The slot is available only if there is a schedule-generated "available"
+    // entry and no active customer booking for the same time
     const isAvailable = !!availableBooking && !bookedEntry;
 
     // Use the available booking's ID if present (needed for transaction creation)
@@ -568,11 +625,21 @@ export async function fetchAvailability(
     });
 
     if (!isAvailable && bookedEntry) {
+      // Determine how the booking was detected for debug logging
+      const detectionMethod =
+        bookedEntry.transaction_id ? 'transaction (Strategy A)' :
+        bookedEntry.customer_id ? 'customer (Strategy A)' :
+        bookedEntry.status === '1' ? 'status=1 (Strategy B: POST /bookings)' :
+        (bookedEntry.status?.toLowerCase().trim() !== 'available' && bookedEntry.status?.toLowerCase().trim() !== 'expired') ? `status="${bookedEntry.status}"` :
+        bookedEntry.group_size > 0 ? 'group_size>0 (legacy Strategy B)' : 'unknown';
+
       console.log(
         `[OTC Availability] Slot ${startTime} BOOKED -- ` +
-          `booking #${bookedEntry.id} (status: ${bookedEntry.status}, ` +
+          `booking #${bookedEntry.id} (status: "${bookedEntry.status}", ` +
+          `group_size: ${bookedEntry.group_size}, ` +
           `transaction: ${bookedEntry.transaction_id ?? 'none'}, ` +
-          `customer: ${bookedEntry.customer_email ?? bookedEntry.customer_id ?? 'unknown'})`
+          `customer: ${bookedEntry.customer_email ?? bookedEntry.customer_id ?? 'none'}, ` +
+          `detected via: ${detectionMethod})`
       );
     }
   }
@@ -790,6 +857,15 @@ export async function fetchGiftCardById(
  * This is the primary way to complete a customer booking or gift card
  * purchase through the API. The transaction ties together bookings,
  * gift cards, customer data, and payment.
+ *
+ * KNOWN ISSUE (diagnosed 2026-02-07): Returns 500 "Internal server error"
+ * because no pricing categories are configured in OTC Console. The same
+ * root cause makes GET /games/{id}?include_pricing=true return 500
+ * "Database error occurred". POST /transactions internally performs a
+ * pricing calculation that crashes when pricing_categories is empty.
+ *
+ * FIX: Configure pricing categories in OTC Console (Games > Settings > Pricing).
+ * Until that's done, the booking flow uses Strategy B (POST /bookings) as fallback.
  */
 export async function createTransaction(
   params: OTCCreateTransactionParams

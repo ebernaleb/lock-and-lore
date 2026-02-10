@@ -1,5 +1,11 @@
 'use client';
 
+/**
+ * @deprecated Step indicator component from the old 3-step booking flow.
+ * Superseded by OTC iframe embed which has its own progress UI.
+ * Safe to remove once iframe integration is confirmed stable in production.
+ */
+
 import React from 'react';
 import { Check } from 'lucide-react';
 

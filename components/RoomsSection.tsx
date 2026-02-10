@@ -11,6 +11,7 @@ import {
   getGameImage,
   formatPlayerCount,
 } from "@/lib/game-utils";
+import { Button } from "@/components/ui/button";
 
 // ---------------------------------------------------------------------------
 // Carousel Room Data Shape
@@ -166,14 +167,12 @@ function CarouselSlide({ room, isActive, isPreview, onClick }: CarouselSlideProp
           {room.description}
         </p>
         <div>
-          <Link
-            href={`/rooms/${room.slug}`}
-            scroll={true}
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-neutral-950 font-medium px-6 py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-          >
-            <span className="relative z-10">Learn More</span>
-            <ArrowRight className="w-4 h-4 relative z-10" />
-          </Link>
+          <Button asChild size="lg" className="rounded-full gap-2">
+            <Link href={`/rooms/${room.slug}`} scroll={true}>
+              Learn More
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </div>
@@ -506,7 +505,16 @@ export function RoomsSection() {
   }, []);
 
   return (
-    <section className="py-16 sm:py-20 md:py-24 bg-black relative overflow-hidden" id="rooms">
+    <section className="pt-56 sm:pt-64 md:pt-72 pb-24 sm:pb-28 md:pb-36 bg-black relative overflow-hidden" id="rooms">
+      {/* Top darkness gradient - seamless blend with hero section */}
+      <div
+        className="absolute inset-x-0 top-0 h-80 pointer-events-none"
+        style={{
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, transparent 100%)"
+        }}
+        aria-hidden="true"
+      />
+
       {/* Section Header - Constrained width */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 sm:mb-14 md:mb-16">

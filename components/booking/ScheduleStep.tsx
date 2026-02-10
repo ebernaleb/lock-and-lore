@@ -1,5 +1,11 @@
 'use client';
 
+/**
+ * @deprecated Step 1 of the old 3-step booking flow. Superseded by OTC iframe embed.
+ * See: components/booking/OTCBookingEmbed.tsx
+ * Safe to remove once iframe integration is confirmed stable in production.
+ */
+
 import { Calendar, Clock, DollarSign } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useBooking } from '@/lib/booking-context';

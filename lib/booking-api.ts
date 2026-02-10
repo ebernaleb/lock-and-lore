@@ -1,3 +1,10 @@
+/**
+ * @deprecated This entire module is superseded by the OTC iframe embed (OTCBookingEmbed.tsx).
+ * The iframe handles availability fetching and booking creation directly.
+ * These client-side API wrappers are no longer called by any frontend code.
+ * Safe to remove once iframe integration is confirmed stable in production.
+ */
+
 export interface TimeSlot {
   /** OTC booking slot ID -- needed to create transactions against this slot */
   booking_slot_id?: number;

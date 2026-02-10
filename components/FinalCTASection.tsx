@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Ticket, Shield, Users, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // ---------------------------------------------------------------------------
 // Component
@@ -7,17 +8,7 @@ import { Ticket, Shield, Users, Clock } from "lucide-react";
 
 export function FinalCTASection() {
   return (
-    <section className="py-20 sm:py-24 bg-black relative overflow-hidden">
-      {/* Decorative elements */}
-      <div
-        className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute bottom-0 right-1/4 w-80 h-80 bg-secondary/5 rounded-full blur-3xl pointer-events-none"
-        aria-hidden="true"
-      />
-
+    <section className="py-24 sm:py-32 md:py-36 bg-black relative overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
         {/* Headline */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
@@ -51,19 +42,17 @@ export function FinalCTASection() {
 
         {/* CTA buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            href="/rooms"
-            className="flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-neutral-950 font-medium px-6 py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none uppercase tracking-wide w-full sm:w-auto"
-          >
-            <Ticket className="w-5 h-5 relative z-10" />
-            <span className="relative z-10">Check Availability</span>
-          </Link>
-          <Link
-            href="/contact"
-            className="flex items-center justify-center gap-2 bg-zinc-700 hover:bg-zinc-600 text-white font-medium px-6 py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(39,39,42,1)] hover:shadow-[0_2px_0_0_rgba(39,39,42,1)] active:shadow-[0_0px_0_0_rgba(39,39,42,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.15)] before:pointer-events-none uppercase tracking-wide w-full sm:w-auto"
-          >
-            <span className="relative z-10">Contact Us</span>
-          </Link>
+          <Button asChild size="lg" className="rounded-full uppercase tracking-wide gap-2 w-full sm:w-auto">
+            <Link href="/rooms">
+              <Ticket className="w-5 h-5" />
+              Check Availability
+            </Link>
+          </Button>
+          <Button asChild variant="secondary" size="lg" className="rounded-full uppercase tracking-wide w-full sm:w-auto">
+            <Link href="/contact">
+              Contact Us
+            </Link>
+          </Button>
         </div>
 
         {/* Micro-copy for urgency */}

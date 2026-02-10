@@ -57,14 +57,6 @@ function RoomCard({ room }: { room: RoomCardData }) {
             {room.difficulty}
           </span>
         </div>
-
-        {/* Hover CTA overlay */}
-        <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-          <span className="inline-flex items-center gap-1.5 bg-white text-gray-900 font-bold text-sm py-2 px-4 rounded-full shadow-lg">
-            View Details
-            <ArrowRight className="w-4 h-4" />
-          </span>
-        </div>
       </div>
 
       {/* Card body */}

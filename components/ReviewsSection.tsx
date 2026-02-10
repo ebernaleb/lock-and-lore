@@ -2,6 +2,7 @@
 
 import { Star, Quote, Users, ThumbsUp } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 // ---------------------------------------------------------------------------
 // Review Data
@@ -199,12 +200,11 @@ export function ReviewsSection() {
 
         {/* CTA */}
         <div className="mt-12 sm:mt-16 text-center">
-          <Link
-            href="/rooms"
-            className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-neutral-950 font-medium px-6 py-3 text-base rounded-full shadow-[0_4px_0_0_rgba(122,92,32,1)] hover:shadow-[0_2px_0_0_rgba(122,92,32,1)] active:shadow-[0_0px_0_0_rgba(122,92,32,1)] hover:translate-y-[2px] active:translate-y-[4px] transition-all duration-150 relative before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_0_rgba(255,255,255,0.2)] before:pointer-events-none uppercase tracking-wide"
-          >
-            <span className="relative z-10">Check Availability</span>
-          </Link>
+          <Button asChild size="lg" className="rounded-full uppercase tracking-wide">
+            <Link href="/rooms">
+              Check Availability
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
